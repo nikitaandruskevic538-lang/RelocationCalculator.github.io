@@ -1,6 +1,6 @@
-# RelocationCalculator.github.io
+
 Калькулятор переезда — прогнозирует цены на квартиру, еду и транспорт. Учитывайте аренду, продукты, топливо и проезд. Получите детальную смету расходов на новом месте. Сравнивайте города, планируйте бюджет и избегайте неожиданных трат. Подходит для переездов в другой город или страну. Бесплатно и удобно.
-<!DOCTYPE html>
+
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
@@ -48,7 +48,7 @@
             margin: 0;
         }
 
-        /* Описание под заголовком (по центру) */
+        /* Описание под заголовком */
         .description {
             text-align: center;
             margin-bottom: 30px;
@@ -65,7 +65,7 @@
             border: 1px solid rgba(182, 139, 107, 0.3);
         }
 
-        /* Стили калькулятора (адаптированы под новый фон) */
+        /* Карточка калькулятора */
         .calculator-card {
             background: rgba(30, 30, 50, 0.85);
             backdrop-filter: blur(10px);
@@ -113,11 +113,75 @@
             box-shadow: 0 10px 25px rgba(139, 107, 214, 0.4);
         }
 
+        /* Рамка для скачивания */
+        .download-section {
+            margin-top: 30px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .download-frame {
+            background: rgba(255, 248, 235, 0.85);
+            backdrop-filter: blur(4px);
+            border: 2px solid #b68b6b;
+            border-radius: 24px;
+            padding: 25px;
+            max-width: 500px;
+            margin: 0 auto;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+            transition: transform 0.2s;
+        }
+
+        .download-frame:hover {
+            transform: translateY(-3px);
+        }
+
+        .download-frame p {
+            font-size: 1rem;
+            color: #6b4c3a;
+            margin-bottom: 8px;
+        }
+
+        .download-frame .download-title {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: #5a3e2e;
+            margin-bottom: 5px;
+        }
+
+        .download-frame .offline-note {
+            font-size: 0.85rem;
+            color: #8b6a54;
+            margin-bottom: 15px;
+        }
+
+        .download-btn {
+            display: inline-block;
+            background: linear-gradient(135deg, #6b4c3a, #8b6a54);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            padding: 12px 28px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            text-decoration: none;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        .download-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+            background: linear-gradient(135deg, #7a5a48, #9b7a64);
+        }
+
         .results {
             background: rgba(255, 248, 235, 0.9);
             border-radius: 24px;
             padding: 30px;
             box-shadow: 0 20px 50px rgba(0,0,0,0.1);
+            display: none;
         }
 
         .results .metric {
@@ -154,15 +218,31 @@
         }
 
         .footer {
+            text-align: center;
+            margin-top: 30px;
+            font-size: 12px;
             color: #7a5a48;
         }
 
         .update-info {
             background: rgba(255,248,235,0.8);
+            border-radius: 10px;
+            padding: 8px 15px;
+            font-size: 12px;
+            margin-top: 15px;
+            display: inline-block;
             color: #6b4c3a;
         }
 
-        /* Остальные стили оставляем как в вашем калькуляторе */
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header p {
+            color: #7a5a48;
+        }
+
         .row {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -233,10 +313,6 @@
 
         button:hover {
             transform: translateY(-2px);
-        }
-
-        .results {
-            display: none;
         }
 
         .metric {
@@ -383,29 +459,10 @@
             .title-frame h1 {
                 font-size: 1.4rem;
             }
-        }
-
-        .footer {
-            text-align: center;
-            margin-top: 30px;
-            font-size: 12px;
-        }
-
-        .update-info {
-            border-radius: 10px;
-            padding: 8px 15px;
-            font-size: 12px;
-            margin-top: 15px;
-            display: inline-block;
-        }
-
-        .header {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-
-        .header p {
-            color: #7a5a48;
+            .download-frame {
+                margin: 0 15px;
+                padding: 20px;
+            }
         }
     </style>
 </head>
@@ -425,7 +482,7 @@
             </div>
         </div>
 
-        <!-- Весь ваш калькулятор -->
+        <!-- Калькулятор -->
         <div class="calculator-card">
             <div class="row">
                 <div class="input-group">
@@ -472,6 +529,16 @@
             <button onclick="calculate()">📊 Рассчитать переезд</button>
         </div>
 
+        <!-- НОВАЯ РАМКА ДЛЯ СКАЧИВАНИЯ -->
+        <div class="download-section">
+            <div class="download-frame">
+                <div class="download-title">📥 Скачать калькулятор</div>
+                <p>🇷🇺 Россия — сравнение 30 городов</p>
+                <div class="offline-note">💡 Сохраните HTML-файл и пользуйтесь без интернета</div>
+                <button class="download-btn" onclick="downloadCalculator()">⬇️ Скачать .html и пользоваться офлайн</button>
+            </div>
+        </div>
+
         <div id="results" class="results"></div>
         
         <div class="footer">
@@ -480,7 +547,7 @@
     </div>
 
     <script>
-        // Актуальные данные по 30 городам России (источник: Росстат, Циан, 2ГИС, апрель 2026)
+        // Актуальные данные по 30 городам России
         const citiesData = {
             "Москва": { salary: 132000, rent1Center: 58000, rent1Suburb: 42000, rent2Room: 89000, foodBasket: 9120, transportMonth: 3400, gasoline: 56.5, taxi: 550, utils: 7800 },
             "Санкт-Петербург": { salary: 101000, rent1Center: 48000, rent1Suburb: 34000, rent2Room: 74000, foodBasket: 8890, transportMonth: 2950, gasoline: 54.2, taxi: 480, utils: 6700 },
@@ -965,6 +1032,20 @@
             }, 100);
             
             window.scrollTo({ top: document.getElementById('results').offsetTop - 20, behavior: 'smooth' });
+        }
+        
+        // Функция для скачивания HTML-файла
+        function downloadCalculator() {
+            const htmlContent = document.documentElement.outerHTML;
+            const blob = new Blob([htmlContent], { type: 'text/html' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'calculator_pereezda_rossiya.html';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
         }
         
         togglePartnerSalary();
