@@ -1,4 +1,4 @@
-
+# RelocationCalculator.github.io
 Калькулятор переезда — прогнозирует цены на квартиру, еду и транспорт. Учитывайте аренду, продукты, топливо и проезд. Получите детальную смету расходов на новом месте. Сравнивайте города, планируйте бюджет и избегайте неожиданных трат. Подходит для переездов в другой город или страну. Бесплатно и удобно.
 
 <html lang="ru">
@@ -7,6 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
     <title>Калькулятор переезда | Сравнение 30 городов России</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -15,15 +16,124 @@
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: linear-gradient(135deg, #f5f0e1, #e8dccc);
             min-height: 100vh;
             padding: 40px 20px;
+            transition: background 0.3s ease;
+        }
+
+        /* Тёмная тема */
+        body.dark-theme {
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+        }
+
+        body.dark-theme .title-frame {
+            background: rgba(30, 30, 50, 0.8);
+            border-color: #7c3aed;
+        }
+
+        body.dark-theme .title-frame h1 {
+            color: #e0e0e0;
+        }
+
+        body.dark-theme .description-text {
+            background: rgba(30, 30, 50, 0.6);
+            color: #ccc;
+        }
+
+        body.dark-theme .calculator-card {
+            background: rgba(20, 20, 40, 0.9);
+        }
+
+        body.dark-theme .results {
+            background: rgba(30, 30, 50, 0.85);
+        }
+
+        body.dark-theme .budget-card {
+            background: linear-gradient(135deg, #2a2a3e, #1e1e2e);
+            color: #ddd;
+        }
+
+        body.dark-theme .budget-card h4,
+        body.dark-theme .budget-card .budget-amount {
+            color: #c084fc;
+        }
+
+        body.dark-theme .chart {
+            background: #2a2a3e;
+        }
+
+        body.dark-theme .chart-title {
+            color: #e0e0e0;
+        }
+
+        body.dark-theme .sources {
+            background: #1e1e2e;
+            color: #aaa;
+        }
+
+        body.dark-theme .footer {
+            color: #aaa;
+        }
+
+        body.dark-theme .download-frame {
+            background: rgba(30, 30, 50, 0.8);
+            border-color: #7c3aed;
+        }
+
+        body.dark-theme .download-frame p,
+        body.dark-theme .download-frame .download-title,
+        body.dark-theme .download-frame .offline-note {
+            color: #e0e0e0;
+        }
+
+        body.dark-theme .metric {
+            background: linear-gradient(135deg, #2a2a3e, #1e1e2e);
+            color: #ddd;
+        }
+
+        body.dark-theme .advice {
+            background: #2a2a3e;
+            border-left-color: #c084fc;
+            color: #ddd;
+        }
+
+        body.dark-theme .inflation-chart {
+            background: #2a2a3e;
         }
 
         .container {
             max-width: 1400px;
             margin: 0 auto;
+        }
+
+        /* Кнопка тёмной темы */
+        .theme-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(107, 76, 58, 0.8);
+            backdrop-filter: blur(8px);
+            border: none;
+            border-radius: 50px;
+            padding: 10px 18px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 500;
+            color: white;
+            z-index: 1000;
+            transition: all 0.2s;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .theme-toggle:hover {
+            transform: scale(1.02);
+            background: rgba(107, 76, 58, 1);
+        }
+
+        body.dark-theme .theme-toggle {
+            background: rgba(124, 58, 237, 0.8);
         }
 
         /* Рамка для заголовка */
@@ -40,6 +150,7 @@
             background: rgba(255, 248, 235, 0.7);
             backdrop-filter: blur(4px);
             box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+            transition: all 0.3s;
         }
 
         h1 {
@@ -74,6 +185,11 @@
             box-shadow: 0 20px 50px rgba(0,0,0,0.2);
             margin-bottom: 30px;
             border: 1px solid rgba(255,255,255,0.15);
+            transition: all 0.3s;
+        }
+
+        .calculator-card:hover {
+            box-shadow: 0 25px 60px rgba(0,0,0,0.25);
         }
 
         .calculator-card label {
@@ -85,6 +201,13 @@
             background: rgba(255,255,255,0.1);
             border: 1px solid rgba(255,255,255,0.2);
             color: white;
+            transition: all 0.2s;
+        }
+
+        .calculator-card select:focus,
+        .calculator-card input:focus {
+            border-color: #a888e5;
+            transform: scale(1.01);
         }
 
         .calculator-card select option {
@@ -103,13 +226,16 @@
         .family-salary {
             background: rgba(255,255,255,0.08);
             border-left: 4px solid #a888e5;
+            transition: all 0.3s;
         }
 
         button {
             background: linear-gradient(135deg, #a888e5, #8b6bd6);
+            transition: all 0.2s;
         }
 
         button:hover {
+            transform: translateY(-2px);
             box-shadow: 0 10px 25px rgba(139, 107, 214, 0.4);
         }
 
@@ -165,7 +291,6 @@
             font-size: 1rem;
             font-weight: bold;
             cursor: pointer;
-            text-decoration: none;
             transition: transform 0.2s, box-shadow 0.2s;
             box-shadow: 0 4px 10px rgba(0,0,0,0.1);
         }
@@ -173,7 +298,116 @@
         .download-btn:hover {
             transform: translateY(-2px);
             box-shadow: 0 8px 20px rgba(0,0,0,0.15);
-            background: linear-gradient(135deg, #7a5a48, #9b7a64);
+        }
+
+        /* Городской рейтинг */
+        .rating-section {
+            margin-bottom: 30px;
+        }
+
+        .rating-frame {
+            background: rgba(255, 248, 235, 0.7);
+            backdrop-filter: blur(4px);
+            border-radius: 20px;
+            padding: 20px;
+            text-align: center;
+            border: 1px solid rgba(182, 139, 107, 0.3);
+        }
+
+        .rating-frame h3 {
+            color: #6b4c3a;
+            margin-bottom: 15px;
+        }
+
+        .rating-list {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            flex-wrap: wrap;
+        }
+
+        .rating-item {
+            background: white;
+            border-radius: 15px;
+            padding: 12px 20px;
+            min-width: 120px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            transition: transform 0.2s;
+        }
+
+        .rating-item:hover {
+            transform: translateY(-3px);
+        }
+
+        .rating-item .place {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #a888e5;
+        }
+
+        .rating-item .city {
+            font-weight: 600;
+            color: #4a3b2e;
+        }
+
+        .rating-item .diff {
+            font-size: 0.85rem;
+            color: #27ae60;
+        }
+
+        body.dark-theme .rating-frame {
+            background: rgba(30, 30, 50, 0.7);
+        }
+
+        body.dark-theme .rating-frame h3 {
+            color: #e0e0e0;
+        }
+
+        body.dark-theme .rating-item {
+            background: #2a2a3e;
+        }
+
+        body.dark-theme .rating-item .city {
+            color: #ddd;
+        }
+
+        /* Годовой бонус */
+        .yearly-bonus {
+            margin-top: 20px;
+            padding: 15px;
+            background: linear-gradient(135deg, #27ae6020, #2ecc7120);
+            border-radius: 16px;
+            text-align: center;
+            font-size: 1.1rem;
+            font-weight: 500;
+            border-left: 4px solid #27ae60;
+        }
+
+        .yearly-bonus span {
+            font-weight: bold;
+            color: #27ae60;
+            font-size: 1.3rem;
+        }
+
+        body.dark-theme .yearly-bonus {
+            background: linear-gradient(135deg, #27ae6030, #2ecc7130);
+            color: #ddd;
+        }
+
+        /* Индикатор загрузки */
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 0.6s linear infinite;
+            margin-left: 10px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
         }
 
         .results {
@@ -182,6 +416,12 @@
             padding: 30px;
             box-shadow: 0 20px 50px rgba(0,0,0,0.1);
             display: none;
+            transition: all 0.3s;
+        }
+
+        /* Анимация для баров */
+        .bar-fill {
+            transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .results .metric {
@@ -199,6 +439,12 @@
 
         .budget-card {
             background: linear-gradient(135deg, #f5efe5, #e8e0d4);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .budget-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
         }
 
         .budget-card h4,
@@ -268,12 +514,6 @@
             transition: all 0.3s;
         }
 
-        select:focus, input:focus {
-            outline: none;
-            border-color: #a888e5;
-            box-shadow: 0 0 0 3px rgba(168,136,229,0.2);
-        }
-
         .radio-group {
             display: flex;
             gap: 20px;
@@ -308,11 +548,6 @@
             font-size: 18px;
             font-weight: bold;
             cursor: pointer;
-            transition: transform 0.2s, box-shadow 0.2s;
-        }
-
-        button:hover {
-            transform: translateY(-2px);
         }
 
         .metric {
@@ -340,6 +575,11 @@
             padding: 20px;
             background: #f8f9fa;
             border-radius: 15px;
+            transition: transform 0.2s;
+        }
+
+        .chart:hover {
+            transform: scale(1.01);
         }
 
         .chart-title {
@@ -378,7 +618,6 @@
             color: white;
             font-weight: bold;
             border-radius: 10px;
-            transition: width 0.5s ease;
         }
 
         .city-a { background: #3498db; }
@@ -395,11 +634,6 @@
             padding: 25px;
             border-radius: 15px;
             text-align: center;
-            transition: transform 0.2s;
-        }
-
-        .budget-card:hover {
-            transform: translateY(-3px);
         }
 
         .budget-amount {
@@ -443,6 +677,7 @@
             width: 100%;
         }
 
+        /* Мобильное меню для таблиц */
         @media (max-width: 768px) {
             .row, .two-columns {
                 grid-template-columns: 1fr;
@@ -463,10 +698,25 @@
                 margin: 0 15px;
                 padding: 20px;
             }
+            .rating-list {
+                flex-direction: column;
+                align-items: center;
+            }
+            .rating-item {
+                width: 80%;
+            }
+            table {
+                font-size: 12px;
+            }
+            th, td {
+                padding: 8px !important;
+            }
         }
     </style>
 </head>
 <body>
+    <button class="theme-toggle" onclick="toggleTheme()">🌙 Тёмная тема</button>
+
     <div class="container">
         <!-- Заголовок в рамке -->
         <div class="title-wrapper">
@@ -497,7 +747,7 @@
 
             <div class="input-group">
                 <label>💰 Ваша зарплата (₽ в месяц)</label>
-                <input type="number" id="salarySelf" value="90000" placeholder="Введите вашу зарплату">
+                <input type="number" id="salarySelf" value="90000" placeholder="Введите вашу зарплату" oninput="validateNumber(this)">
             </div>
 
             <div class="input-group">
@@ -511,7 +761,7 @@
             <div id="partnerSalaryDiv" class="family-salary">
                 <div class="input-group">
                     <label>👤 Зарплата партнера/супруга (₽)</label>
-                    <input type="number" id="salaryPartner" value="50000" placeholder="Введите зарплату партнера">
+                    <input type="number" id="salaryPartner" value="50000" placeholder="Введите зарплату партнера" oninput="validateNumber(this)">
                 </div>
             </div>
 
@@ -526,16 +776,26 @@
                 </select>
             </div>
 
-            <button onclick="calculate()">📊 Рассчитать переезд</button>
+            <button onclick="calculateWithLoading()">📊 Рассчитать переезд</button>
         </div>
 
-        <!-- НОВАЯ РАМКА ДЛЯ СКАЧИВАНИЯ -->
+        <!-- Рейтинг городов (дополнительная фишка) -->
+        <div class="rating-section" id="ratingSection">
+            <div class="rating-frame">
+                <h3>🏆 ТОП-3 города для переезда по вашим параметрам</h3>
+                <div class="rating-list" id="ratingList">
+                    <div class="rating-item">📊 Выберите город и зарплату</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Рамка для скачивания -->
         <div class="download-section">
             <div class="download-frame">
                 <div class="download-title">📥 Скачать калькулятор</div>
                 <p>🇷🇺 Россия — сравнение 30 городов</p>
-                <div class="offline-note">💡 Сохраните HTML-файл и пользуйтесь без интернета</div>
-                <button class="download-btn" onclick="downloadCalculator()">⬇️ Скачать .html и пользоваться офлайн</button>
+                <div class="offline-note">💡 Сохраните HTML-файл и пользуйтесь без интернета (графики требуют Wi-Fi)</div>
+                <button class="download-btn" onclick="downloadCalculator()">⬇️ Скачать .html</button>
             </div>
         </div>
 
@@ -547,7 +807,80 @@
     </div>
 
     <script>
-        // Актуальные данные по 30 городам России
+        // ========== ДОПОЛНИТЕЛЬНЫЕ ФУНКЦИИ (НЕ ТРОГАЮТ ОСНОВУ) ==========
+
+        // Тёмная тема
+        function toggleTheme() {
+            document.body.classList.toggle('dark-theme');
+            const btn = document.querySelector('.theme-toggle');
+            if (document.body.classList.contains('dark-theme')) {
+                btn.innerHTML = '☀️ Светлая тема';
+            } else {
+                btn.innerHTML = '🌙 Тёмная тема';
+            }
+        }
+
+        // Валидация чисел
+        function validateNumber(input) {
+            if (input.value < 0) input.value = 0;
+            if (input.value === '') input.value = 0;
+        }
+
+        // Индикатор загрузки
+        function showLoading(button) {
+            const originalText = button.innerHTML;
+            button.innerHTML = '⏳ Расчёт... <span class="loading"></span>';
+            button.disabled = true;
+            return function restore() {
+                button.innerHTML = originalText;
+                button.disabled = false;
+            };
+        }
+
+        // Рейтинг городов (работает на основе текущих данных)
+        function updateRating(cityFrom, cityTo, salarySelf, salaryPartner, scenario) {
+            const totalSalary = salarySelf + (scenario === 'family' ? salaryPartner : 0);
+            const cities = Object.keys(citiesData);
+            const ratings = [];
+            
+            for (const city of cities) {
+                const data = citiesData[city];
+                const rent = scenario === 'single' ? data.rent1Suburb : data.rent2Room;
+                const expenses = rent + data.utils + data.foodBasket + data.transportMonth;
+                const freeMoney = totalSalary - expenses;
+                ratings.push({ city, freeMoney });
+            }
+            
+            ratings.sort((a, b) => b.freeMoney - a.freeMoney);
+            const top3 = ratings.slice(0, 3);
+            
+            const ratingList = document.getElementById('ratingList');
+            ratingList.innerHTML = top3.map((r, idx) => {
+                const medal = idx === 0 ? '🥇' : idx === 1 ? '🥈' : '🥉';
+                return `
+                    <div class="rating-item">
+                        <div class="place">${medal} #${idx + 1}</div>
+                        <div class="city">${r.city}</div>
+                        <div class="diff">💰 ${Math.round(r.freeMoney).toLocaleString()} ₽/мес</div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Годовой бонус при переезде
+        function showYearlyBonus(freeA, freeB, cityA, cityB) {
+            const yearlyDiff = (freeB - freeA) * 12;
+            if (yearlyDiff > 0) {
+                return `<div class="yearly-bonus">🎉 Если переедете в ${cityB}, ваш годовой бонус составит <span>+${Math.round(yearlyDiff).toLocaleString()} ₽</span> в год!</div>`;
+            } else if (yearlyDiff < 0) {
+                return `<div class="yearly-bonus">⚠️ Переезд в ${cityB} может уменьшить ваш годовой бюджет на <span>${Math.round(Math.abs(yearlyDiff)).toLocaleString()} ₽</span></div>`;
+            }
+            return '';
+        }
+
+        // ========== ОСНОВА КАЛЬКУЛЯТОРА (ВАШ КОД) ==========
+        
+        // Данные по городам (ваши)
         const citiesData = {
             "Москва": { salary: 132000, rent1Center: 58000, rent1Suburb: 42000, rent2Room: 89000, foodBasket: 9120, transportMonth: 3400, gasoline: 56.5, taxi: 550, utils: 7800 },
             "Санкт-Петербург": { salary: 101000, rent1Center: 48000, rent1Suburb: 34000, rent2Room: 74000, foodBasket: 8890, transportMonth: 2950, gasoline: 54.2, taxi: 480, utils: 6700 },
@@ -815,37 +1148,39 @@
 
         function createTransportTable(dataA, dataB, cityA, cityB) {
             return `
-                <table style="width: 100%; border-collapse: collapse;">
-                    <thead>
-                        <tr style="background: linear-gradient(135deg, #a888e5, #8b6bd6); color: white;">
-                            <th style="padding: 12px; text-align: left; border-radius: 10px 0 0 0;">Категория</th>
-                            <th style="padding: 12px; text-align: center;">${cityA}</th>
-                            <th style="padding: 12px; text-align: center; border-radius: 0 10px 0 0;">${cityB}</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr style="border-bottom: 1px solid #e0e0e0;">
-                            <td style="padding: 12px;">🚌 Проездной (месяц)</td>
-                            <td style="padding: 12px; text-align: center;"><strong>${formatNumber(dataA.transportMonth)} ₽</strong></td>
-                            <td style="padding: 12px; text-align: center;"><strong>${formatNumber(dataB.transportMonth)} ₽</strong></td>
-                        </tr>
-                        <tr style="border-bottom: 1px solid #e0e0e0; background: #f8f9fa;">
-                            <td style="padding: 12px;">⛽ Бензин АИ-95 (литр)</td>
-                            <td style="padding: 12px; text-align: center;"><strong>${dataA.gasoline} ₽</strong></td>
-                            <td style="padding: 12px; text-align: center;"><strong>${dataB.gasoline} ₽</strong></td>
-                        </tr>
-                        <tr style="border-bottom: 1px solid #e0e0e0;">
-                            <td style="padding: 12px;">🚕 Такси (средняя поездка)</td>
-                            <td style="padding: 12px; text-align: center;"><strong>${formatNumber(dataA.taxi)} ₽</strong></td>
-                            <td style="padding: 12px; text-align: center;"><strong>${formatNumber(dataB.taxi)} ₽</strong></td>
-                        </tr>
-                        <tr style="background: #f8f9fa;">
-                            <td style="padding: 12px;">💡 ЖКХ (квартплата + свет + вода)</td>
-                            <td style="padding: 12px; text-align: center;"><strong>${formatNumber(dataA.utils)} ₽</strong></td>
-                            <td style="padding: 12px; text-align: center;"><strong>${formatNumber(dataB.utils)} ₽</strong></td>
-                        </tr>
-                    </tbody>
-                </table>
+                <div style="overflow-x: auto;">
+                    <table style="width: 100%; border-collapse: collapse; min-width: 300px;">
+                        <thead>
+                            <tr style="background: linear-gradient(135deg, #a888e5, #8b6bd6); color: white;">
+                                <th style="padding: 12px; text-align: left; border-radius: 10px 0 0 0;">Категория</th>
+                                <th style="padding: 12px; text-align: center;">${cityA}</th>
+                                <th style="padding: 12px; text-align: center; border-radius: 0 10px 0 0;">${cityB}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr style="border-bottom: 1px solid #e0e0e0;">
+                                <td style="padding: 12px;">🚌 Проездной (месяц)</td>
+                                <td style="padding: 12px; text-align: center;"><strong>${formatNumber(dataA.transportMonth)} ₽</strong></td>
+                                <td style="padding: 12px; text-align: center;"><strong>${formatNumber(dataB.transportMonth)} ₽</strong></td>
+                            </tr>
+                            <tr style="border-bottom: 1px solid #e0e0e0; background: #f8f9fa;">
+                                <td style="padding: 12px;">⛽ Бензин АИ-95 (литр)</td>
+                                <td style="padding: 12px; text-align: center;"><strong>${dataA.gasoline} ₽</strong></td>
+                                <td style="padding: 12px; text-align: center;"><strong>${dataB.gasoline} ₽</strong></td>
+                            </tr>
+                            <tr style="border-bottom: 1px solid #e0e0e0;">
+                                <td style="padding: 12px;">🚕 Такси (средняя поездка)</td>
+                                <td style="padding: 12px; text-align: center;"><strong>${formatNumber(dataA.taxi)} ₽</strong></td>
+                                <td style="padding: 12px; text-align: center;"><strong>${formatNumber(dataB.taxi)} ₽</strong></td>
+                            </tr>
+                            <tr style="background: #f8f9fa;">
+                                <td style="padding: 12px;">💡 ЖКХ (квартплата + свет + вода)</td>
+                                <td style="padding: 12px; text-align: center;"><strong>${formatNumber(dataA.utils)} ₽</strong></td>
+                                <td style="padding: 12px; text-align: center;"><strong>${formatNumber(dataB.utils)} ₽</strong></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
                 <div style="margin-top: 12px; font-size: 11px; color: #999; text-align: center;">
                     📍 Источник: 2ГИС API, данные на ${dateStr}
                 </div>
@@ -941,6 +1276,9 @@
                 `;
             }
             
+            // Годовой бонус
+            const yearlyBonusHtml = showYearlyBonus(freeA, freeB, cityA, cityB);
+            
             const resultsHtml = `
                 <div class="metric">
                     <h3>⚡ ИТОГОВОЕ ИЗМЕНЕНИЕ РЕАЛЬНОГО ДОХОДА</h3>
@@ -950,6 +1288,8 @@
                     <p>Ваш свободный остаток в <strong>${cityB}</strong> ${percentChange >= 0 ? 'выше' : 'ниже'} на <strong>${Math.abs(Math.round(percentChange))}%</strong> по сравнению с <strong>${cityA}</strong></p>
                     <p style="margin-top: 10px; font-size: 14px;">💰 Общий доход семьи: ${formatNumber(totalSalary)} ₽/мес</p>
                 </div>
+                
+                ${yearlyBonusHtml}
                 
                 <div class="chart">
                     <div class="chart-title">🏠 Сравнение аренды жилья (данные Циан)</div>
@@ -1031,10 +1371,23 @@
                 createInflationChart(monthlyForecast, cityB);
             }, 100);
             
+            // Обновляем рейтинг
+            updateRating(cityA, cityB, salarySelf, salaryPartner, scenario);
+            
             window.scrollTo({ top: document.getElementById('results').offsetTop - 20, behavior: 'smooth' });
         }
         
-        // Функция для скачивания HTML-файла
+        // Обёртка с индикатором загрузки
+        function calculateWithLoading() {
+            const btn = document.querySelector('.calculator-card button');
+            const restore = showLoading(btn);
+            setTimeout(() => {
+                calculate();
+                restore();
+            }, 100);
+        }
+        
+        // Функция для скачивания
         function downloadCalculator() {
             const htmlContent = document.documentElement.outerHTML;
             const blob = new Blob([htmlContent], { type: 'text/html' });
@@ -1048,7 +1401,17 @@
             URL.revokeObjectURL(url);
         }
         
+        // Инициализация рейтинга при загрузке
+        function initRating() {
+            const salarySelf = 90000;
+            const salaryPartner = 50000;
+            const scenario = 'single';
+            updateRating('Москва', 'Санкт-Петербург', salarySelf, salaryPartner, scenario);
+        }
+        
         togglePartnerSalary();
+        initRating();
     </script>
 </body>
 </html>
+
