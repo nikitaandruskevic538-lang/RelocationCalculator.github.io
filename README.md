@@ -7,6 +7,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
     <title>Калькулятор "Цена переезда" - 30 городов России</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
         * {
             margin: 0;
@@ -15,249 +17,165 @@
         }
 
         body {
-            font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #f5f0e1, #e8dccc);
+            font-family: 'Inter', 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
             padding: 40px 20px;
-            transition: background 0.3s ease, color 0.3s ease;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        /* Анимированный фон */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><circle cx="50" cy="50" r="40" fill="rgba(255,255,255,0.03)"/><circle cx="150" cy="120" r="60" fill="rgba(255,255,255,0.02)"/><circle cx="100" cy="180" r="30" fill="rgba(255,255,255,0.04)"/></svg>') repeat;
+            pointer-events: none;
+            z-index: 0;
         }
 
         body.dark-theme {
-            background: linear-gradient(135deg, #1a1a2e, #16213e);
-            color: #e0e0e0;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
         }
 
-        body.dark-theme .title-frame {
-            background: rgba(30, 30, 50, 0.8);
-            border-color: #7c3aed;
-        }
-
-        body.dark-theme .title-frame h1 {
-            color: #f0f0f0;
-        }
-
-        body.dark-theme .description-text {
-            background: rgba(30, 30, 50, 0.6);
-            color: #ccc;
-        }
-
-        body.dark-theme .calculator-card {
-            background: rgba(20, 20, 40, 0.9);
-        }
-
-        body.dark-theme .calculator-card label {
-            color: #ddd;
-        }
-
-        body.dark-theme .calculator-card select,
-        body.dark-theme .calculator-card input {
-            background: rgba(255,255,255,0.1);
-            border: 1px solid rgba(255,255,255,0.2);
-            color: white;
-        }
-
-        body.dark-theme .calculator-card select option {
-            background: #2a2a3e;
-            color: white;
-        }
-
-        body.dark-theme .results {
-            background: rgba(30, 30, 50, 0.85);
-            color: #e0e0e0;
-        }
-
-        body.dark-theme .budget-card {
-            background: linear-gradient(135deg, #2a2a3e, #1e1e2e);
-            color: #ddd;
-        }
-
-        body.dark-theme .budget-card h4,
-        body.dark-theme .budget-card .budget-amount {
-            color: #c084fc;
-        }
-
-        body.dark-theme .chart {
-            background: #2a2a3e;
-        }
-
-        body.dark-theme .chart-title {
-            color: #f0f0f0;
-        }
-
-        body.dark-theme .sources {
-            background: #1e1e2e;
-            color: #bbb;
-        }
-
-        body.dark-theme .footer {
-            color: #aaa;
-        }
-
-        body.dark-theme .download-frame {
-            background: rgba(30, 30, 50, 0.8);
-            border-color: #7c3aed;
-        }
-
-        body.dark-theme .download-frame p,
-        body.dark-theme .download-frame .download-title,
-        body.dark-theme .download-frame .offline-note {
-            color: #e0e0e0;
-        }
-
-        body.dark-theme .metric {
-            background: linear-gradient(135deg, #2a2a3e, #1e1e2e);
-            color: #ddd;
-        }
-
-        body.dark-theme .metric h3,
-        body.dark-theme .metric p {
-            color: #e0e0e0;
-        }
-
-        body.dark-theme .advice {
-            background: #2a2a3e;
-            border-left-color: #c084fc;
-            color: #e0e0e0;
-        }
-
-        body.dark-theme .inflation-chart {
-            background: #2a2a3e;
-            color: #e0e0e0;
-        }
-
-        body.dark-theme .bar-label span {
-            color: #e0e0e0;
-        }
-
-        body.dark-theme .radio-group label {
-            color: #e0e0e0;
-        }
-
-        body.dark-theme table td {
-            color: #e0e0e0;
-        }
-
-        body.dark-theme table tr {
-            border-bottom-color: #3a3a4e;
-        }
-
-        body.dark-theme table tr:nth-child(even) {
-            background: #2a2a3e;
-        }
-
-        body.dark-theme .forecast-card {
-            background: linear-gradient(135deg, #a888e520 0%, #8b6bd620 100%);
-            color: #e0e0e0;
-        }
-
-        body.dark-theme .forecast-card p {
-            color: #bbb;
-        }
-
-        body.dark-theme .kids-block {
-            background: rgba(46, 204, 113, 0.15);
-            border-left-color: #2ecc71;
-        }
-
-        body.dark-theme .kids-block label {
-            color: #ddd;
-        }
-
-        body.dark-theme .entertainment-section {
-            background: #2a2a3e;
-        }
-
-        body.dark-theme .entertainment-item {
-            background: #1e1e2e;
-            color: #ddd;
+        body.dark-theme::before {
+            opacity: 0.5;
         }
 
         .container {
             max-width: 1400px;
             margin: 0 auto;
+            position: relative;
+            z-index: 1;
         }
 
+        /* Анимации */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(-20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.02); box-shadow: 0 10px 30px rgba(139, 107, 214, 0.4); }
+        }
+
+        /* Кнопка тёмной темы */
         .theme-toggle {
             position: fixed;
             top: 20px;
             right: 20px;
-            background: rgba(107, 76, 58, 0.8);
-            backdrop-filter: blur(8px);
-            border: none;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
             border-radius: 50px;
-            padding: 10px 18px;
+            padding: 10px 20px;
             cursor: pointer;
-            font-size: 1rem;
+            font-size: 0.9rem;
             font-weight: 500;
             color: white;
             z-index: 1000;
-            transition: all 0.2s;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
 
         .theme-toggle:hover {
-            transform: scale(1.02);
-            background: rgba(107, 76, 58, 1);
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
         }
 
         body.dark-theme .theme-toggle {
-            background: rgba(124, 58, 237, 0.8);
+            background: rgba(0, 0, 0, 0.3);
         }
 
+        /* Заголовок */
         .title-wrapper {
             text-align: center;
-            margin-bottom: 20px;
+            margin-bottom: 30px;
+            animation: fadeInUp 0.8s ease;
         }
 
         .title-frame {
-            border: 3px solid #b68b6b;
-            border-radius: 60px;
-            padding: 18px 35px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 80px;
+            padding: 20px 45px;
             display: inline-block;
-            background: rgba(255, 248, 235, 0.7);
-            backdrop-filter: blur(4px);
-            box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
             transition: all 0.3s;
+        }
+
+        .title-frame:hover {
+            transform: translateY(-3px);
+            border-color: rgba(255, 255, 255, 0.5);
         }
 
         h1 {
             font-size: 2rem;
-            color: #6b4c3a;
+            color: white;
             margin: 0;
+            letter-spacing: -0.5px;
+        }
+
+        h1 i {
+            margin-right: 10px;
         }
 
         .description {
             text-align: center;
             margin-bottom: 30px;
+            animation: fadeInUp 0.8s ease 0.1s backwards;
         }
 
         .description-text {
-            font-size: 1.1rem;
-            color: #7a5a48;
-            background: rgba(255, 248, 235, 0.6);
-            backdrop-filter: blur(4px);
-            border-radius: 40px;
+            font-size: 1rem;
+            color: rgba(255, 255, 255, 0.9);
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(8px);
+            border-radius: 50px;
             padding: 10px 25px;
             display: inline-block;
-            border: 1px solid rgba(182, 139, 107, 0.3);
         }
 
+        /* Карточка калькулятора */
         .calculator-card {
-            background: rgba(255, 248, 235, 0.85);
-            backdrop-filter: blur(10px);
-            border-radius: 24px;
-            padding: 30px;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.1);
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 32px;
+            padding: 35px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
             margin-bottom: 30px;
             transition: all 0.3s;
+            animation: fadeInUp 0.8s ease 0.2s backwards;
         }
 
         .calculator-card:hover {
-            box-shadow: 0 25px 60px rgba(0,0,0,0.15);
+            transform: translateY(-5px);
+            box-shadow: 0 30px 60px -15px rgba(0, 0, 0, 0.3);
+        }
+
+        body.dark-theme .calculator-card {
+            background: rgba(30, 30, 50, 0.95);
         }
 
         .calculator-card label {
             color: #4a3b2e;
+            font-weight: 600;
+        }
+
+        body.dark-theme .calculator-card label {
+            color: #ddd;
         }
 
         .input-group {
@@ -272,20 +190,31 @@
 
         select, input {
             width: 100%;
-            padding: 12px 15px;
-            border: 2px solid #e0e0e0;
-            border-radius: 14px;
-            font-size: 16px;
+            padding: 14px 18px;
+            border: 2px solid #e2e8f0;
+            border-radius: 16px;
+            font-size: 15px;
             transition: all 0.3s;
-            color: #000;
             background: white;
+            font-family: 'Inter', sans-serif;
         }
 
         select:focus, input:focus {
             outline: none;
-            border-color: #a888e5;
-            box-shadow: 0 0 0 3px rgba(168, 136, 229, 0.2);
+            border-color: #8b6bd6;
+            box-shadow: 0 0 0 3px rgba(139, 107, 214, 0.2);
             transform: scale(1.01);
+        }
+
+        body.dark-theme select,
+        body.dark-theme input {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.2);
+            color: white;
+        }
+
+        body.dark-theme select option {
+            background: #2a2a3e;
         }
 
         .row {
@@ -307,118 +236,140 @@
             gap: 8px;
             font-weight: normal;
             cursor: pointer;
+            padding: 8px 16px;
+            background: rgba(139, 107, 214, 0.1);
+            border-radius: 30px;
+            transition: all 0.2s;
+        }
+
+        .radio-group label:hover {
+            background: rgba(139, 107, 214, 0.2);
         }
 
         .radio-group input {
             width: auto;
         }
 
-        .family-salary {
+        .family-salary, .kids-block {
             display: none;
-            margin-top: 10px;
-            padding: 15px;
-            background: rgba(168, 136, 229, 0.1);
-            border-radius: 14px;
-            border-left: 4px solid #a888e5;
+            margin-top: 15px;
+            padding: 20px;
+            background: rgba(139, 107, 214, 0.08);
+            border-radius: 20px;
+            border-left: 4px solid #8b6bd6;
             transition: all 0.3s;
         }
 
-        .kids-block {
-            background: rgba(46, 204, 113, 0.1);
-            border-left: 4px solid #2ecc71;
-            border-radius: 14px;
-            padding: 15px;
-            margin: 15px 0;
-            display: none;
-        }
-
-        .kids-block label {
-            margin-bottom: 10px;
+        body.dark-theme .family-salary,
+        body.dark-theme .kids-block {
+            background: rgba(139, 107, 214, 0.15);
         }
 
         .kids-slider {
             width: 100%;
             margin: 10px 0;
             cursor: pointer;
-            accent-color: #a888e5;
+            accent-color: #8b6bd6;
         }
 
         .kids-value {
             font-weight: bold;
-            color: #2ecc71;
+            color: #8b6bd6;
             font-size: 1.2rem;
-            display: inline-block;
             margin-left: 10px;
         }
 
         button {
             width: 100%;
-            padding: 15px;
-            background: linear-gradient(135deg, #a888e5, #8b6bd6);
+            padding: 16px;
+            background: linear-gradient(135deg, #8b6bd6 0%, #6c4ab6 100%);
             color: white;
             border: none;
-            border-radius: 14px;
+            border-radius: 20px;
             font-size: 18px;
-            font-weight: bold;
+            font-weight: 700;
             cursor: pointer;
-            transition: transform 0.2s, box-shadow 0.2s;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        button i {
+            font-size: 1.2rem;
         }
 
         button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(139, 107, 214, 0.4);
+            transform: translateY(-3px);
+            box-shadow: 0 15px 30px rgba(139, 107, 214, 0.4);
         }
 
         .results {
-            background: rgba(255, 248, 235, 0.9);
-            border-radius: 24px;
-            padding: 30px;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.1);
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 32px;
+            padding: 35px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
             display: none;
-            transition: all 0.3s;
+            animation: fadeInUp 0.6s ease;
+        }
+
+        body.dark-theme .results {
+            background: rgba(30, 30, 50, 0.95);
         }
 
         .metric {
             text-align: center;
-            padding: 25px;
-            background: linear-gradient(135deg, #e8e0d0, #ddd0bc);
-            border-radius: 15px;
+            padding: 30px;
+            background: linear-gradient(135deg, #f8f9ff 0%, #f0eef8 100%);
+            border-radius: 24px;
             margin-bottom: 30px;
         }
 
-        .metric h3 {
-            color: #4a3b2e;
-            margin-bottom: 10px;
+        body.dark-theme .metric {
+            background: linear-gradient(135deg, #2a2a3e 0%, #1e1e2e 100%);
         }
 
         .percent-change {
-            font-size: 52px;
-            font-weight: bold;
+            font-size: 64px;
+            font-weight: 800;
             margin: 15px 0;
+            letter-spacing: -2px;
         }
 
-        .positive { color: #27ae60; }
-        .negative { color: #e74c3c; }
+        .positive { color: #10b981; }
+        .negative { color: #ef4444; }
 
         .chart {
             margin-bottom: 30px;
-            padding: 20px;
+            padding: 25px;
             background: #f8f9fa;
-            border-radius: 15px;
-            transition: transform 0.2s;
+            border-radius: 24px;
+            transition: all 0.3s;
         }
 
         .chart:hover {
-            transform: scale(1.01);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        body.dark-theme .chart {
+            background: #2a2a3e;
         }
 
         .chart-title {
             font-size: 18px;
-            font-weight: bold;
+            font-weight: 700;
             margin-bottom: 20px;
-            color: #4a3b2e;
-            border-left: 4px solid #a888e5;
-            padding-left: 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .chart-title i {
+            font-size: 1.3rem;
+            color: #8b6bd6;
         }
 
         .bar-container {
@@ -434,10 +385,14 @@
         }
 
         .bar-bg {
-            background: #e0e0e0;
-            border-radius: 10px;
+            background: #e2e8f0;
+            border-radius: 12px;
             overflow: hidden;
-            height: 38px;
+            height: 40px;
+        }
+
+        body.dark-theme .bar-bg {
+            background: #3a3a4e;
         }
 
         .bar-fill {
@@ -448,126 +403,93 @@
             padding-right: 15px;
             color: white;
             font-weight: bold;
-            border-radius: 10px;
-            transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            border-radius: 12px;
+            transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        .city-a { background: #3498db; }
-        .city-b { background: #e67e22; }
+        .city-a { background: linear-gradient(90deg, #3b82f6, #2563eb); }
+        .city-b { background: linear-gradient(90deg, #f97316, #ea580c); }
 
         .two-columns {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 20px;
-            margin-bottom: 20px;
+            gap: 25px;
+            margin-bottom: 25px;
         }
 
         .budget-card {
-            background: linear-gradient(135deg, #f5efe5, #e8e0d4);
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
             padding: 25px;
-            border-radius: 15px;
+            border-radius: 24px;
             text-align: center;
-            transition: transform 0.2s, box-shadow 0.2s;
+            transition: all 0.3s;
         }
 
         .budget-card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
         }
 
-        .budget-card h4 {
-            color: #5a4a3a;
-            margin-bottom: 15px;
+        body.dark-theme .budget-card {
+            background: linear-gradient(135deg, #2a2a3e 0%, #1e1e2e 100%);
         }
 
         .budget-amount {
-            font-size: 32px;
-            font-weight: bold;
-            color: #a888e5;
+            font-size: 36px;
+            font-weight: 800;
+            color: #8b6bd6;
             margin: 15px 0;
         }
 
         .forecast-card {
-            background: linear-gradient(135deg, #a888e520 0%, #8b6bd620 100%);
-            padding: 20px;
-            border-radius: 15px;
+            background: linear-gradient(135deg, rgba(139, 107, 214, 0.1) 0%, rgba(108, 74, 182, 0.1) 100%);
+            padding: 25px;
+            border-radius: 24px;
             margin-top: 20px;
+            border: 1px solid rgba(139, 107, 214, 0.2);
         }
 
         .advice {
-            background: #fff3cd;
-            border-left: 4px solid #ffc107;
-            padding: 18px;
-            border-radius: 10px;
+            background: #fef3c7;
+            border-left: 5px solid #f59e0b;
+            padding: 20px;
+            border-radius: 16px;
             margin-top: 20px;
-            font-size: 15px;
-            line-height: 1.5;
-            color: #856404;
+        }
+
+        body.dark-theme .advice {
+            background: #2a2a3e;
+            border-left-color: #c084fc;
         }
 
         .sources {
             margin-top: 20px;
-            padding: 15px;
+            padding: 20px;
             background: #e8f0f5;
-            border-radius: 10px;
+            border-radius: 16px;
             font-size: 11px;
-            color: #4a627a;
             line-height: 1.6;
         }
 
-        .inflation-chart {
-            margin-top: 20px;
-            padding: 20px;
-            background: #f8f9fa;
-            border-radius: 15px;
-        }
-
-        canvas {
-            max-height: 300px;
-            width: 100%;
-        }
-
-        .footer {
-            text-align: center;
-            margin-top: 30px;
-            font-size: 12px;
-            color: #7a5a48;
-        }
-
-        .update-info {
-            background: rgba(255,248,235,0.8);
-            border-radius: 10px;
-            padding: 8px 15px;
-            font-size: 12px;
-            margin-top: 15px;
-            display: inline-block;
-            color: #6b4c3a;
-        }
-
-        .header {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-
-        .header p {
-            color: #7a5a48;
+        body.dark-theme .sources {
+            background: #1e1e2e;
         }
 
         .entertainment-section {
             margin-bottom: 30px;
-            padding: 20px;
+            padding: 25px;
             background: #f8f9fa;
-            border-radius: 15px;
-            transition: transform 0.2s;
+            border-radius: 24px;
+            transition: all 0.3s;
         }
 
-        .entertainment-section:hover {
-            transform: scale(1.01);
+        body.dark-theme .entertainment-section {
+            background: #2a2a3e;
         }
 
         .entertainment-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
             gap: 15px;
             margin-top: 15px;
         }
@@ -575,14 +497,18 @@
         .entertainment-item {
             background: white;
             padding: 15px;
-            border-radius: 12px;
+            border-radius: 16px;
             text-align: center;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-            transition: transform 0.2s;
+            transition: all 0.3s;
         }
 
         .entertainment-item:hover {
             transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        body.dark-theme .entertainment-item {
+            background: #1e1e2e;
         }
 
         .entertainment-item .icon {
@@ -590,55 +516,74 @@
             margin-bottom: 8px;
         }
 
-        .entertainment-item .name {
-            font-weight: bold;
-            margin-bottom: 5px;
-        }
-
         .entertainment-item .price {
             font-size: 18px;
             font-weight: bold;
-            color: #a888e5;
+            color: #8b6bd6;
+        }
+
+        .inflation-chart {
+            margin-top: 20px;
+            padding: 25px;
+            background: #f8f9fa;
+            border-radius: 24px;
+        }
+
+        body.dark-theme .inflation-chart {
+            background: #2a2a3e;
+        }
+
+        canvas {
+            max-height: 300px;
+            width: 100%;
         }
 
         .download-section {
             margin-top: 30px;
-            margin-bottom: 30px;
             text-align: center;
         }
 
         .download-frame {
-            background: rgba(255, 248, 235, 0.85);
-            backdrop-filter: blur(4px);
-            border: 2px solid #b68b6b;
-            border-radius: 24px;
-            padding: 25px;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 32px;
+            padding: 30px;
             max-width: 500px;
             margin: 0 auto;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
-            transition: transform 0.2s;
+            transition: all 0.3s;
         }
 
         .download-frame:hover {
             transform: translateY(-3px);
+            border-color: rgba(255, 255, 255, 0.4);
         }
 
         .download-btn {
-            display: inline-block;
-            background: linear-gradient(135deg, #6b4c3a, #8b6a54);
+            background: linear-gradient(135deg, #10b981, #059669);
             color: white;
             border: none;
             border-radius: 50px;
-            padding: 12px 28px;
+            padding: 14px 30px;
             font-size: 1rem;
             font-weight: bold;
             cursor: pointer;
-            transition: transform 0.2s, box-shadow 0.2s;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
         }
 
         .download-btn:hover {
             transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+            box-shadow: 0 10px 20px rgba(16, 185, 129, 0.3);
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.7);
         }
 
         @media (max-width: 768px) {
@@ -646,16 +591,19 @@
                 grid-template-columns: 1fr;
             }
             .percent-change {
-                font-size: 36px;
+                font-size: 42px;
             }
             .budget-amount {
-                font-size: 24px;
+                font-size: 28px;
+            }
+            .title-frame {
+                padding: 12px 25px;
+            }
+            h1 {
+                font-size: 1.5rem;
             }
             .calculator-card, .results {
                 padding: 20px;
-            }
-            .title-frame h1 {
-                font-size: 1.4rem;
             }
             .entertainment-grid {
                 grid-template-columns: repeat(2, 1fr);
@@ -664,61 +612,64 @@
     </style>
 </head>
 <body>
-    <button class="theme-toggle" onclick="toggleTheme()">🌙 Тёмная тема</button>
+    <button class="theme-toggle" onclick="toggleTheme()">
+        <i class="fas fa-moon"></i>
+        <span>Тёмная тема</span>
+    </button>
 
     <div class="container">
         <div class="title-wrapper">
             <div class="title-frame">
-                <h1>💰 Цена переезда</h1>
+                <h1><i class="fas fa-exchange-alt"></i> Цена переезда</h1>
             </div>
         </div>
         <div class="description">
             <div class="description-text">
-                Сравнение 30 городов России | Прогноз с учетом инфляции и сезонности | Анализ всех расходов с детьми
+                <i class="fas fa-chart-line"></i> Сравнение 30 городов России | Прогноз с учетом инфляции и сезонности | Анализ всех расходов с детьми
             </div>
         </div>
 
         <div class="calculator-card">
             <div class="row">
                 <div class="input-group">
-                    <label>📍 Откуда переезжаете?</label>
+                    <label><i class="fas fa-map-marker-alt"></i> Откуда переезжаете?</label>
                     <select id="cityFrom"></select>
                 </div>
                 <div class="input-group">
-                    <label>📍 Куда переезжаете?</label>
+                    <label><i class="fas fa-map-pin"></i> Куда переезжаете?</label>
                     <select id="cityTo"></select>
                 </div>
             </div>
 
             <div class="row">
                 <div class="input-group">
-                    <label>💰 Ваша зарплата (₽ в месяц)</label>
+                    <label><i class="fas fa-ruble-sign"></i> Ваша зарплата (₽ в месяц)</label>
                     <input type="number" id="salarySelf" value="90000" placeholder="Введите вашу зарплату">
                 </div>
                 <div class="input-group">
-                    <label>👥 Сценарий проживания</label>
+                    <label><i class="fas fa-users"></i> Сценарий проживания</label>
                     <div class="radio-group">
-                        <label><input type="radio" name="scenario" value="single" checked> 🧑 Один</label>
-                        <label><input type="radio" name="scenario" value="family"> 👨‍👩‍👧 Семья</label>
+                        <label><input type="radio" name="scenario" value="single" checked> <i class="fas fa-user"></i> Один</label>
+                        <label><input type="radio" name="scenario" value="family"> <i class="fas fa-family"></i> Семья</label>
                     </div>
                 </div>
             </div>
 
             <div id="partnerSalaryDiv" class="family-salary">
                 <div class="input-group">
-                    <label>👤 Зарплата партнера (₽)</label>
+                    <label><i class="fas fa-user-plus"></i> Зарплата партнера (₽)</label>
                     <input type="number" id="salaryPartner" value="50000">
                 </div>
             </div>
 
             <div id="kidsBlock" class="kids-block">
-                <label>👶 Количество детей <span id="kidsCountValue" class="kids-value">0</span></label>
+                <label><i class="fas fa-baby-carriage"></i> Количество детей <span id="kidsCountValue" class="kids-value">0</span></label>
                 <input type="range" id="kidsCount" class="kids-slider" min="0" max="5" step="1" value="0">
-                <small style="opacity: 0.7;">Расходы на детей увеличивают все категории трат (продукты, транспорт, ЖКХ, развлечения)</small>
+                <small><i class="fas fa-info-circle"></i> Расходы на детей увеличивают все категории трат (продукты, транспорт, ЖКХ, развлечения)</small>
             </div>
 
             <div class="input-group">
-                <label>📈 Прогноз на будущее (лет)</label>
+                <label><i class="fas fa-chart-line"></i> Прогноз на будущее (лет)</label>
                 <select id="forecastYears">
                     <option value="0">Без прогноза</option>
                     <option value="1" selected>1 год</option>
@@ -728,22 +679,27 @@
                 </select>
             </div>
 
-            <button onclick="calculate()">📊 Рассчитать переезд</button>
+            <button onclick="calculate()">
+                <i class="fas fa-calculator"></i> Рассчитать переезд
+            </button>
         </div>
 
         <div id="results" class="results"></div>
 
         <div class="download-section">
             <div class="download-frame">
-                <div class="download-title">📥 Сохранить результат</div>
+                <i class="fas fa-download" style="font-size: 2rem; margin-bottom: 10px; display: inline-block;"></i>
+                <div style="font-size: 1.2rem; font-weight: bold;">Сохранить результат</div>
                 <p>Скачайте отчёт в HTML-формате</p>
-                <div class="offline-note">✅ Работает офлайн, все данные уже встроены</div>
-                <button class="download-btn" onclick="downloadReport()">⬇️ Скачать отчёт</button>
+                <div><i class="fas fa-check-circle"></i> Работает офлайн, все данные уже встроены</div>
+                <button class="download-btn" onclick="downloadReport()">
+                    <i class="fas fa-file-download"></i> Скачать отчёт
+                </button>
             </div>
         </div>
 
         <div class="footer">
-            <p>© 2026 Калькулятор "Цена переезда" | 30 городов | Данные: Росстат, Циан, 2ГИС, Едадил, Яндекс.Афиша</p>
+            <p><i class="far fa-copyright"></i> 2026 Калькулятор "Цена переезда" | 30 городов | Данные: Росстат, Циан, 2ГИС, Едадил, Яндекс.Афиша</p>
         </div>
     </div>
 
@@ -785,17 +741,16 @@
 
         // Коэффициенты увеличения расходов на каждого ребёнка
         const KIDS_MULTIPLIERS = {
-            food: 0.35,      // +35% к продуктам на каждого ребёнка
-            transport: 0.25,  // +25% к транспорту
-            utils: 0.20,      // +20% к ЖКХ
-            entertainment: 0.40, // +40% к развлечениям
-            baseChildExpense: 8000 // базовая сумма на ребёнка (одежда, секции, игрушки)
+            food: 0.35,
+            transport: 0.25,
+            utils: 0.20,
+            entertainment: 0.40,
+            baseChildExpense: 8000
         };
 
-        // Сезонные коэффициенты
         const seasonalFactors = { 1: 1.12, 2: 1.05, 3: 1.00, 4: 0.98, 5: 0.97, 6: 0.96, 7: 0.95, 8: 0.96, 9: 0.98, 10: 1.00, 11: 1.03, 12: 1.08 };
         const inflationMonthly = { 1: 1.05, 2: 0.72, 3: 0.48, 4: 0.44, 5: 0.55, 6: 0.50, 7: 0.60, 8: 0.35, 9: 0.45, 10: 0.65, 11: 0.90, 12: 1.10 };
-        const inflationData = { rate: 0.095, monthly: 0.0075 };
+        const inflationData = { rate: 0.095 };
 
         let inflationChart = null;
 
@@ -869,12 +824,11 @@
                             { label: 'Инфляция (%)', data: inflationValues, borderColor: '#27ae60', backgroundColor: 'rgba(39,174,96,0.1)', borderWidth: 2, fill: false, tension: 0.4, yAxisID: 'y1' }
                         ]
                     },
-                    options: { responsive: true, maintainAspectRatio: true, plugins: { legend: { position: 'top' }, title: { display: true, text: 'Прогноз с учетом инфляции и сезонности' } }, scales: { y: { title: { display: true, text: 'Расходы (₽)' } }, y1: { position: 'right', title: { display: true, text: 'Процент (%)' } } } }
+                    options: { responsive: true, maintainAspectRatio: true, plugins: { legend: { position: 'top' } }, scales: { y: { title: { display: true, text: 'Расходы (₽)' } }, y1: { position: 'right', title: { display: true, text: 'Процент (%)' } } } }
                 });
             }
         }
 
-        // Функция расчета расходов с учетом детей
         function calculateExpensesWithKids(baseExpenses, kidsCount, category) {
             const multiplier = KIDS_MULTIPLIERS[category] || 0;
             return baseExpenses * (1 + multiplier * kidsCount);
@@ -883,13 +837,7 @@
         function getEntertainmentHtml(data, cityName, kidsCount, scenario) {
             const ent = data.entertainment;
             const isFamily = scenario === 'family';
-            
-            let entertainmentHtml = `
-                <div class="entertainment-section">
-                    <div class="chart-title">🎭 Развлечения и досуг в ${cityName}</div>
-                    <div class="entertainment-grid">`;
-            
-            // Базовые цены
+            let html = `<div class="entertainment-section"><div class="chart-title"><i class="fas fa-ticket-alt"></i> Развлечения и досуг в ${cityName}</div><div class="entertainment-grid">`;
             const items = [
                 { icon: "🎬", name: "Кино (билет)", price: ent.cinema },
                 { icon: "🍽️", name: "Ужин в кафе", price: ent.cafe },
@@ -897,33 +845,79 @@
                 { icon: "🎭", name: "Театр (билет)", price: ent.theater },
                 { icon: "🪩", name: "Ночной клуб", price: ent.club }
             ];
-            
             items.forEach(item => {
                 let finalPrice = item.price;
                 let note = '';
                 if (isFamily && kidsCount > 0) {
-                    // Детские развлечения (детское меню, мультики, детские комнаты и т.д.)
-                    const kidsExtra = kidsCount * 300;
-                    finalPrice = item.price + kidsExtra;
-                    note = ` <span style="font-size: 10px; color: #2ecc71;">(+${formatNumber(kidsExtra)}₽ дети)</span>`;
+                    finalPrice = item.price + kidsCount * 300;
+                    note = ` <span style="font-size: 10px; color: #2ecc71;">(+${formatNumber(kidsCount * 300)}₽ дети)</span>`;
                 }
-                entertainmentHtml += `
-                    <div class="entertainment-item">
-                        <div class="icon">${item.icon}</div>
-                        <div class="name">${item.name}</div>
-                        <div class="price">${formatNumber(finalPrice)} ₽${note}</div>
-                    </div>`;
+                html += `<div class="entertainment-item"><div class="icon">${item.icon}</div><div class="name">${item.name}</div><div class="price">${formatNumber(finalPrice)} ₽${note}</div></div>`;
             });
-            
-            entertainmentHtml += `
-                    </div>
-                    <div style="margin-top: 12px; font-size: 12px; color: #666;">
-                        📊 Средние цены по данным Яндекс.Афиша и 2ГИС (апрель 2026)
-                        ${isFamily && kidsCount > 0 ? `<br>👶 Учтены дополнительные расходы на детей: детское меню (+${kidsCount * 300}₽/человека), детские билеты в кино/театр` : ''}
-                    </div>
-                </div>
-            `;
-            return entertainmentHtml;
+            html += `</div><div style="margin-top: 12px; font-size: 12px; color: #666;"><i class="fas fa-database"></i> Средние цены по данным Яндекс.Афиша и 2ГИС (апрель 2026)</div></div>`;
+            return html;
+        }
+
+        function createRentChart(dataA, dataB, cityA, cityB) {
+            const maxRent = Math.max(dataA.rent1Center, dataB.rent1Center, dataA.rent1Suburb, dataB.rent1Suburb, dataA.rent2Room, dataB.rent2Room);
+            return `<div class="bar-container"><div class="bar-label"><span><i class="fas fa-building"></i> 1-комнатная в центре</span><span><strong>${cityA}</strong> ${formatNumber(dataA.rent1Center)} ₽ | <strong>${cityB}</strong> ${formatNumber(dataB.rent1Center)} ₽</span></div><div class="bar-bg"><div class="bar-fill city-a" style="width: ${(dataA.rent1Center / maxRent) * 100}%">${Math.round((dataA.rent1Center / maxRent) * 100)}%</div></div><div class="bar-bg" style="margin-top: 5px;"><div class="bar-fill city-b" style="width: ${(dataB.rent1Center / maxRent) * 100}%">${Math.round((dataB.rent1Center / maxRent) * 100)}%</div></div></div>
+            <div class="bar-container"><div class="bar-label"><span><i class="fas fa-home"></i> 1-комнатная в спальном районе</span><span><strong>${cityA}</strong> ${formatNumber(dataA.rent1Suburb)} ₽ | <strong>${cityB}</strong> ${formatNumber(dataB.rent1Suburb)} ₽</span></div><div class="bar-bg"><div class="bar-fill city-a" style="width: ${(dataA.rent1Suburb / maxRent) * 100}%">${Math.round((dataA.rent1Suburb / maxRent) * 100)}%</div></div><div class="bar-bg" style="margin-top: 5px;"><div class="bar-fill city-b" style="width: ${(dataB.rent1Suburb / maxRent) * 100}%">${Math.round((dataB.rent1Suburb / maxRent) * 100)}%</div></div></div>
+            <div class="bar-container"><div class="bar-label"><span><i class="fas fa-users"></i> 2-комнатная (для семьи)</span><span><strong>${cityA}</strong> ${formatNumber(dataA.rent2Room)} ₽ | <strong>${cityB}</strong> ${formatNumber(dataB.rent2Room)} ₽</span></div><div class="bar-bg"><div class="bar-fill city-a" style="width: ${(dataA.rent2Room / maxRent) * 100}%">${Math.round((dataA.rent2Room / maxRent) * 100)}%</div></div><div class="bar-bg" style="margin-top: 5px;"><div class="bar-fill city-b" style="width: ${(dataB.rent2Room / maxRent) * 100}%">${Math.round((dataB.rent2Room / maxRent) * 100)}%</div></div></div>`;
+        }
+
+        function createFoodChartWithKids(baseFoodA, baseFoodB, foodA, foodB, cityA, cityB, kidsCount) {
+            const maxFood = Math.max(foodA, foodB);
+            return `<div class="bar-container"><div class="bar-label"><span><i class="fas fa-utensils"></i> ${cityA}</span><span>${formatNumber(foodA)} ₽</span></div><div class="bar-bg"><div class="bar-fill city-a" style="width: ${(foodA / maxFood) * 100}%">${Math.round((foodA / maxFood) * 100)}%</div></div>${kidsCount > 0 ? `<div style="font-size: 11px; margin-top: 4px;">Базовая корзина: ${formatNumber(baseFoodA)} ₽ + ${Math.round(KIDS_MULTIPLIERS.food * kidsCount * 100)}% на детей</div>` : ''}</div>
+            <div class="bar-container"><div class="bar-label"><span><i class="fas fa-utensils"></i> ${cityB}</span><span>${formatNumber(foodB)} ₽</span></div><div class="bar-bg"><div class="bar-fill city-b" style="width: ${(foodB / maxFood) * 100}%">${Math.round((foodB / maxFood) * 100)}%</div></div>${kidsCount > 0 ? `<div style="font-size: 11px; margin-top: 4px;">Базовая корзина: ${formatNumber(baseFoodB)} ₽ + ${Math.round(KIDS_MULTIPLIERS.food * kidsCount * 100)}% на детей</div>` : ''}</div>
+            <div style="margin-top: 10px; font-size: 12px; background: #e8f4f8; padding: 10px; border-radius: 8px;"><i class="fas fa-bread-slice"></i> Набор из 33 продуктов: хлеб, молоко, мясо, овощи, фрукты, масло, крупы и др.</div>`;
+        }
+
+        function createTransportTableWithKids(dataA, dataB, cityA, cityB, transportA, transportB, utilsA, utilsB, kidsCount) {
+            return `<table style="width: 100%; border-collapse: collapse;"><thead><tr style="background: linear-gradient(135deg, #8b6bd6, #6c4ab6); color: white;"><th style="padding: 12px; text-align: left; border-radius: 10px 0 0 0;">Категория</th><th style="padding: 12px; text-align: center;">${cityA}</th><th style="padding: 12px; text-align: center; border-radius: 0 10px 0 0;">${cityB}</th></tr></thead>
+            <tbody><tr><td style="padding: 12px;"><i class="fas fa-bus"></i> Проездной (месяц)${kidsCount > 0 ? `<br><span style="font-size: 10px;">+${Math.round(KIDS_MULTIPLIERS.transport * kidsCount * 100)}% на детей</span>` : ''}</td><td style="padding: 12px; text-align: center;"><strong>${formatNumber(transportA)} ₽</strong><br><span style="font-size: 10px;">(база: ${formatNumber(dataA.transportMonth)} ₽)</span></td><td style="padding: 12px; text-align: center;"><strong>${formatNumber(transportB)} ₽</strong><br><span style="font-size: 10px;">(база: ${formatNumber(dataB.transportMonth)} ₽)</span></td></tr>
+            <tr style="background: #f8f9fa;"><td style="padding: 12px;"><i class="fas fa-gas-pump"></i> Бензин АИ-95 (литр)</td><td style="padding: 12px; text-align: center;"><strong>${dataA.gasoline} ₽</strong></td><td style="padding: 12px; text-align: center;"><strong>${dataB.gasoline} ₽</strong></td></tr>
+            <tr><td style="padding: 12px;"><i class="fas fa-taxi"></i> Такси (средняя поездка)${kidsCount > 0 ? `<br><span style="font-size: 10px;">+${kidsCount * 150}₽ на детское кресло</span>` : ''}</td><td style="padding: 12px; text-align: center;"><strong>${formatNumber(dataA.taxi + (kidsCount > 0 ? kidsCount * 150 : 0))} ₽</strong></td><td style="padding: 12px; text-align: center;"><strong>${formatNumber(dataB.taxi + (kidsCount > 0 ? kidsCount * 150 : 0))} ₽</strong></td></tr>
+            <tr style="background: #f8f9fa;"><td style="padding: 12px;"><i class="fas fa-lightbulb"></i> ЖКХ (квартплата + свет + вода)${kidsCount > 0 ? `<br><span style="font-size: 10px;">+${Math.round(KIDS_MULTIPLIERS.utils * kidsCount * 100)}% на детей</span>` : ''}</td><td style="padding: 12px; text-align: center;"><strong>${formatNumber(utilsA)} ₽</strong><br><span style="font-size: 10px;">(база: ${formatNumber(dataA.utils)} ₽)</span></td><td style="padding: 12px; text-align: center;"><strong>${formatNumber(utilsB)} ₽</strong><br><span style="font-size: 10px;">(база: ${formatNumber(dataB.utils)} ₽)</span></td></tr></tbody></table>`;
+        }
+
+        function getAdviceTitle(percentChange) {
+            if (percentChange > 15) return '🔥 Отличная возможность!';
+            if (percentChange > 5) return '📈 Хороший вариант';
+            if (percentChange > -5) return '⚠️ Взвесьте все за и против';
+            return '📉 Стоит подумать';
+        }
+
+        function getAdvice(percentChange, cityB, scenario, freeB, freeA, kidsCount) {
+            const diff = freeB - freeA;
+            const diffAbs = Math.abs(diff);
+            if (percentChange > 15) return `Переезд в ${cityB} увеличит ваш бюджет на ${formatNumber(diffAbs)} ₽ (${Math.round(percentChange)}%). ${kidsCount > 0 ? `С ${kidsCount} ${getChildWord(kidsCount)} это особенно важно — больше средств на развитие всей семьи.` : 'Вы сможете больше откладывать или тратить на путешествия.'}`;
+            if (percentChange > 5) return `Переезд в ${cityB} даст умеренный плюс: +${formatNumber(diffAbs)} ₽/мес (${Math.round(percentChange)}%). Учитывайте инфраструктуру, климат и карьерные перспективы.`;
+            if (percentChange > -5) return `Финансовая разница незначительна: ${diff > 0 ? '+' : ''}${formatNumber(diffAbs)} ₽ (${Math.round(percentChange)}%). Ориентируйтесь на качество жизни, экологию и близость к родственникам.`;
+            if (percentChange > -15) return `Переезд снизит ваш остаток на ${formatNumber(diffAbs)} ₽ (${Math.round(percentChange)}%). Рекомендуем найти работу с зарплатой выше средней или рассмотреть удалёнку.`;
+            return `⚠️ ВНИМАНИЕ: ${cityB} уменьшит ваш бюджет на ${formatNumber(diffAbs)} ₽ (${Math.round(percentChange)}%). ${kidsCount > 0 ? `С ${kidsCount} ${getChildWord(kidsCount)} такая разница критична — может существенно повлиять на качество жизни детей.` : 'Настоятельно рекомендуем пересмотреть решение.'}`;
+        }
+
+        function getYearWord(years) { if (years === 1) return 'год'; if (years >= 2 && years <= 4) return 'года'; return 'лет'; }
+        function getChildWord(count) { if (count === 1) return 'ребёнка'; if (count >= 2 && count <= 4) return 'детей'; return 'детей'; }
+
+        function downloadReport() {
+            const content = document.getElementById('results').innerHTML;
+            if (!content || content.trim() === '') { alert('Сначала выполните расчет!'); return; }
+            const style = document.querySelector('style').innerHTML;
+            const fullHtml = `<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Отчёт о переезде</title><script src="https://cdn.jsdelivr.net/npm/chart.js"><\/script><link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"><style>${style} body { padding: 20px; } .theme-toggle, .download-section { display: none; } .container { max-width: 1200px; margin: 0 auto; }</style></head><body><div class="container">${content}</div></body></html>`;
+            const blob = new Blob([fullHtml], { type: 'text/html' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = `price_of_move_report_${new Date().toISOString().slice(0,19).replace(/:/g, '-')}.html`;
+            link.click();
+            URL.revokeObjectURL(link.href);
+        }
+
+        function toggleTheme() {
+            document.body.classList.toggle('dark-theme');
+            const btn = document.querySelector('.theme-toggle');
+            const isDark = document.body.classList.contains('dark-theme');
+            btn.innerHTML = isDark ? '<i class="fas fa-sun"></i> Светлая тема' : '<i class="fas fa-moon"></i> Тёмная тема';
         }
 
         function calculate() {
@@ -942,15 +936,10 @@
             const rentA = scenario === 'single' ? dataA.rent1Suburb : dataA.rent2Room;
             const rentB = scenario === 'single' ? dataB.rent1Suburb : dataB.rent2Room;
 
-            // Базовые расходы (без учёта детей)
-            const baseFoodA = dataA.foodBasket;
-            const baseFoodB = dataB.foodBasket;
-            const baseTransportA = dataA.transportMonth;
-            const baseTransportB = dataB.transportMonth;
-            const baseUtilsA = dataA.utils;
-            const baseUtilsB = dataB.utils;
+            const baseFoodA = dataA.foodBasket, baseFoodB = dataB.foodBasket;
+            const baseTransportA = dataA.transportMonth, baseTransportB = dataB.transportMonth;
+            const baseUtilsA = dataA.utils, baseUtilsB = dataB.utils;
 
-            // Расходы с учётом детей (умножаем каждую категорию на коэффициент)
             const foodA = calculateExpensesWithKids(baseFoodA, kidsCount, 'food');
             const foodB = calculateExpensesWithKids(baseFoodB, kidsCount, 'food');
             const transportA = calculateExpensesWithKids(baseTransportA, kidsCount, 'transport');
@@ -958,252 +947,54 @@
             const utilsA = calculateExpensesWithKids(baseUtilsA, kidsCount, 'utils');
             const utilsB = calculateExpensesWithKids(baseUtilsB, kidsCount, 'utils');
             
-            // Базовая сумма на ребёнка (одежда, секции, игрушки, образование)
             const baseChildExpense = KIDS_MULTIPLIERS.baseChildExpense * kidsCount;
-            
-            // Дополнительные детские расходы (подгузники/канцтовары/секции)
             const kidsExtraExpenses = kidsCount * 3000;
 
             const expensesA = rentA + utilsA + foodA + transportA + baseChildExpense + kidsExtraExpenses;
             const expensesB = rentB + utilsB + foodB + transportB + baseChildExpense + kidsExtraExpenses;
-
             const freeA = totalSalary - expensesA;
             const freeB = totalSalary - expensesB;
             const percentChange = freeA !== 0 ? ((freeB - freeA) / Math.abs(freeA)) * 100 : 0;
 
             const monthlyForecast = getMonthlyForecast(expensesB, 12);
-
             let forecastHtml = '';
             if (forecastYears > 0) {
                 const forecastFreeB = calculateForecast(freeB, forecastYears);
                 const forecastExpensesB = calculateForecast(expensesB, forecastYears);
-                forecastHtml = `<div class="forecast-card"><h4>📈 ПРОГНОЗ НА ${forecastYears} ${getYearWord(forecastYears)}</h4><p style="margin-bottom: 15px;">С учетом инфляции ${(inflationData.rate * 100).toFixed(1)}% в год</p><div class="two-columns"><div><strong>📊 Расходы в ${cityB}:</strong><br><span style="font-size: 20px; color: #e74c3c;">${formatNumber(expensesB)} ₽</span><br>→ через ${forecastYears} ${getYearWord(forecastYears)}: <strong>${formatNumber(forecastExpensesB)} ₽</strong></div><div><strong>💰 Свободный остаток:</strong><br><span style="font-size: 20px; color: #27ae60;">${formatNumber(freeB)} ₽</span><br>→ через ${forecastYears} ${getYearWord(forecastYears)}: <strong>${formatNumber(forecastFreeB)} ₽</strong></div></div></div>`;
+                forecastHtml = `<div class="forecast-card"><h4><i class="fas fa-chart-line"></i> ПРОГНОЗ НА ${forecastYears} ${getYearWord(forecastYears)}</h4><p>С учетом инфляции ${(inflationData.rate * 100).toFixed(1)}% в год</p><div class="two-columns"><div><strong>📊 Расходы в ${cityB}:</strong><br><span style="font-size: 20px; color: #e74c3c;">${formatNumber(expensesB)} ₽</span><br>→ через ${forecastYears} ${getYearWord(forecastYears)}: <strong>${formatNumber(forecastExpensesB)} ₽</strong></div><div><strong>💰 Свободный остаток:</strong><br><span style="font-size: 20px; color: #27ae60;">${formatNumber(freeB)} ₽</span><br>→ через ${forecastYears} ${getYearWord(forecastYears)}: <strong>${formatNumber(forecastFreeB)} ₽</strong></div></div></div>`;
             }
 
             const dateStr = new Date().toLocaleDateString('ru-RU');
-
-            // Детальное описание влияния детей на расходы
             let kidsImpactHtml = '';
             if (scenario === 'family' && kidsCount > 0) {
-                kidsImpactHtml = `
-                    <div style="background: rgba(46,204,113,0.1); border-radius: 12px; padding: 12px; margin: 10px 0; text-align: left;">
-                        <strong>👶 Влияние ${kidsCount} ${getChildWord(kidsCount)} на расходы:</strong><br>
-                        • Продукты: +${Math.round(KIDS_MULTIPLIERS.food * kidsCount * 100)}% (${formatNumber(foodA - baseFoodA)} ₽ в ${cityA} / ${formatNumber(foodB - baseFoodB)} ₽ в ${cityB})<br>
-                        • Транспорт: +${Math.round(KIDS_MULTIPLIERS.transport * kidsCount * 100)}%<br>
-                        • ЖКХ: +${Math.round(KIDS_MULTIPLIERS.utils * kidsCount * 100)}%<br>
-                        • Базовые расходы на ребёнка: ${formatNumber(baseChildExpense)} ₽/мес<br>
-                        • Дополнительные расходы (секции, кружки): ${formatNumber(kidsExtraExpenses)} ₽/мес
-                    </div>
-                `;
+                kidsImpactHtml = `<div style="background: rgba(46,204,113,0.1); border-radius: 16px; padding: 15px; margin-bottom: 20px;"><strong><i class="fas fa-baby-carriage"></i> Влияние ${kidsCount} ${getChildWord(kidsCount)} на расходы:</strong><br>• Продукты: +${Math.round(KIDS_MULTIPLIERS.food * kidsCount * 100)}% (${formatNumber(foodA - baseFoodA)} ₽ в ${cityA} / ${formatNumber(foodB - baseFoodB)} ₽ в ${cityB})<br>• Транспорт: +${Math.round(KIDS_MULTIPLIERS.transport * kidsCount * 100)}%<br>• ЖКХ: +${Math.round(KIDS_MULTIPLIERS.utils * kidsCount * 100)}%<br>• Базовые расходы на ребёнка: ${formatNumber(baseChildExpense)} ₽/мес<br>• Дополнительные расходы (секции, кружки): ${formatNumber(kidsExtraExpenses)} ₽/мес</div>`;
             }
 
             const resultsHtml = `
                 <div class="metric">
-                    <h3>⚡ ИТОГОВОЕ ИЗМЕНЕНИЕ РЕАЛЬНОГО ДОХОДА</h3>
+                    <h3><i class="fas fa-chart-simple"></i> ИТОГОВОЕ ИЗМЕНЕНИЕ РЕАЛЬНОГО ДОХОДА</h3>
                     <div class="percent-change ${percentChange >= 0 ? 'positive' : 'negative'}">${percentChange >= 0 ? '+' : ''}${Math.round(percentChange)}%</div>
                     <p>Ваш свободный остаток в <strong>${cityB}</strong> ${percentChange >= 0 ? 'выше' : 'ниже'} на <strong>${Math.abs(Math.round(percentChange))}%</strong> по сравнению с <strong>${cityA}</strong></p>
-                    <p style="margin-top: 10px;">💰 Общий доход семьи: ${formatNumber(totalSalary)} ₽/мес</p>
-                    ${kidsCount > 0 ? `<p style="margin-top: 5px;">👶 Семья с ${kidsCount} ${getChildWord(kidsCount)}: общие расходы увеличены на <strong>${Math.round(((expensesB - (rentB + baseUtilsB + baseFoodB + baseTransportB)) / (rentB + baseUtilsB + baseFoodB + baseTransportB)) * 100)}%</strong></p>` : ''}
+                    <p><i class="fas fa-ruble-sign"></i> Общий доход семьи: ${formatNumber(totalSalary)} ₽/мес</p>
+                    ${kidsCount > 0 ? `<p><i class="fas fa-baby-carriage"></i> Семья с ${kidsCount} ${getChildWord(kidsCount)}: расходы увеличены на <strong>${Math.round(((expensesB - (rentB + baseUtilsB + baseFoodB + baseTransportB)) / (rentB + baseUtilsB + baseFoodB + baseTransportB)) * 100)}%</strong></p>` : ''}
                 </div>
-
                 ${kidsImpactHtml}
-
-                <div class="chart">
-                    <div class="chart-title">🏠 Сравнение аренды жилья (Циан)</div>
-                    ${createRentChart(dataA, dataB, cityA, cityB)}
-                </div>
-
-                <div class="chart">
-                    <div class="chart-title">🛒 Расходы на продукты (с учётом детей)</div>
-                    ${createFoodChartWithKids(baseFoodA, baseFoodB, foodA, foodB, cityA, cityB, kidsCount)}
-                </div>
-
+                <div class="chart"><div class="chart-title"><i class="fas fa-building"></i> Сравнение аренды жилья (Циан)</div>${createRentChart(dataA, dataB, cityA, cityB)}</div>
+                <div class="chart"><div class="chart-title"><i class="fas fa-utensils"></i> Расходы на продукты (с учётом детей)</div>${createFoodChartWithKids(baseFoodA, baseFoodB, foodA, foodB, cityA, cityB, kidsCount)}</div>
                 ${getEntertainmentHtml(dataB, cityB, kidsCount, scenario)}
-
-                <div class="chart">
-                    <div class="chart-title">🚌 Транспорт и коммунальные услуги (с учётом детей)</div>
-                    ${createTransportTableWithKids(dataA, dataB, cityA, cityB, transportA, transportB, utilsA, utilsB, kidsCount)}
-                </div>
-
-                <div class="inflation-chart">
-                    <div class="chart-title">📈 Прогноз расходов в ${cityB} с учетом инфляции и сезонности</div>
-                    <canvas id="inflationChartCanvas"></canvas>
-                    <div style="margin-top: 10px; font-size: 11px; color: #999; text-align: center;">Учтены сезонные колебания цен и ежемесячная инфляция по данным Росстата</div>
-                </div>
-
-                <div class="two-columns">
-                    <div class="budget-card">
-                        <h4>💰 Бюджет в ${cityA}</h4>
-                        <div class="budget-amount">${formatNumber(freeA)} ₽</div>
-                        <div>📈 Доход: ${formatNumber(totalSalary)} ₽<br>📉 Расходы: ${formatNumber(expensesA)} ₽</div>
-                        <hr style="margin: 15px 0;">
-                        <div style="font-size: 12px;">
-                            🏠 Аренда: ${formatNumber(rentA)} ₽<br>
-                            💡 ЖКХ: ${formatNumber(utilsA)} ₽ (${kidsCount > 0 ? `+${Math.round(KIDS_MULTIPLIERS.utils * kidsCount * 100)}%` : ''})<br>
-                            🍎 Продукты: ${formatNumber(foodA)} ₽ (${kidsCount > 0 ? `+${Math.round(KIDS_MULTIPLIERS.food * kidsCount * 100)}%` : ''})<br>
-                            🚍 Транспорт: ${formatNumber(transportA)} ₽ (${kidsCount > 0 ? `+${Math.round(KIDS_MULTIPLIERS.transport * kidsCount * 100)}%` : ''})<br>
-                            ${kidsCount > 0 ? `👶 Дети (${kidsCount}): ${formatNumber(baseChildExpense + kidsExtraExpenses)} ₽<br>` : ''}
-                        </div>
-                    </div>
-                    <div class="budget-card">
-                        <h4>💰 Бюджет в ${cityB}</h4>
-                        <div class="budget-amount">${formatNumber(freeB)} ₽</div>
-                        <div>📈 Доход: ${formatNumber(totalSalary)} ₽<br>📉 Расходы: ${formatNumber(expensesB)} ₽</div>
-                        <hr style="margin: 15px 0;">
-                        <div style="font-size: 12px;">
-                            🏠 Аренда: ${formatNumber(rentB)} ₽<br>
-                            💡 ЖКХ: ${formatNumber(utilsB)} ₽ (${kidsCount > 0 ? `+${Math.round(KIDS_MULTIPLIERS.utils * kidsCount * 100)}%` : ''})<br>
-                            🍎 Продукты: ${formatNumber(foodB)} ₽ (${kidsCount > 0 ? `+${Math.round(KIDS_MULTIPLIERS.food * kidsCount * 100)}%` : ''})<br>
-                            🚍 Транспорт: ${formatNumber(transportB)} ₽ (${kidsCount > 0 ? `+${Math.round(KIDS_MULTIPLIERS.transport * kidsCount * 100)}%` : ''})<br>
-                            ${kidsCount > 0 ? `👶 Дети (${kidsCount}): ${formatNumber(baseChildExpense + kidsExtraExpenses)} ₽<br>` : ''}
-                        </div>
-                    </div>
-                </div>
-
+                <div class="chart"><div class="chart-title"><i class="fas fa-bus"></i> Транспорт и коммунальные услуги</div>${createTransportTableWithKids(dataA, dataB, cityA, cityB, transportA, transportB, utilsA, utilsB, kidsCount)}</div>
+                <div class="inflation-chart"><div class="chart-title"><i class="fas fa-chart-line"></i> Прогноз расходов в ${cityB}</div><canvas id="inflationChartCanvas"></canvas><div style="margin-top: 10px; font-size: 11px; color: #999; text-align: center;">Учтены сезонные колебания цен и ежемесячная инфляция по данным Росстата</div></div>
+                <div class="two-columns"><div class="budget-card"><h4><i class="fas fa-wallet"></i> Бюджет в ${cityA}</h4><div class="budget-amount">${formatNumber(freeA)} ₽</div><div>📈 Доход: ${formatNumber(totalSalary)} ₽<br>📉 Расходы: ${formatNumber(expensesA)} ₽</div><hr><div style="font-size: 12px;">🏠 Аренда: ${formatNumber(rentA)} ₽<br>💡 ЖКХ: ${formatNumber(utilsA)} ₽<br>🍎 Продукты: ${formatNumber(foodA)} ₽<br>🚍 Транспорт: ${formatNumber(transportA)} ₽${kidsCount > 0 ? `<br>👶 Дети: ${formatNumber(baseChildExpense + kidsExtraExpenses)} ₽` : ''}</div></div>
+                <div class="budget-card"><h4><i class="fas fa-wallet"></i> Бюджет в ${cityB}</h4><div class="budget-amount">${formatNumber(freeB)} ₽</div><div>📈 Доход: ${formatNumber(totalSalary)} ₽<br>📉 Расходы: ${formatNumber(expensesB)} ₽</div><hr><div style="font-size: 12px;">🏠 Аренда: ${formatNumber(rentB)} ₽<br>💡 ЖКХ: ${formatNumber(utilsB)} ₽<br>🍎 Продукты: ${formatNumber(foodB)} ₽<br>🚍 Транспорт: ${formatNumber(transportB)} ₽${kidsCount > 0 ? `<br>👶 Дети: ${formatNumber(baseChildExpense + kidsExtraExpenses)} ₽` : ''}</div></div></div>
                 ${forecastHtml}
-
-                <div class="advice">
-                    <strong>💡 ${getAdviceTitle(percentChange)}</strong><br>
-                    ${getAdvice(percentChange, cityB, scenario, freeB, freeA, kidsCount)}
-                </div>
-
-                <div class="sources">
-                    <strong>📊 ИСТОЧНИКИ ДАННЫХ (актуальные на ${dateStr}):</strong><br>
-                    • 📈 Доходы по регионам — Росстат / НИУ ВШЭ<br>
-                    • 🏠 Цены на аренду — Циан / ручной сбор (30 городов)<br>
-                    • 🛒 Продуктовая корзина — Росстат + Едадил (33 наименования)<br>
-                    • 🚌 Транспорт — 2ГИС API<br>
-                    • 🎭 Развлечения — Яндекс.Афиша, 2ГИС<br>
-                    • 👶 Расходы на детей — Росстат + собственные коэффициенты<br>
-                    • 📊 Инфляция и сезонность — Росстат + ЦБ РФ
-                </div>
+                <div class="advice"><strong><i class="fas fa-lightbulb"></i> ${getAdviceTitle(percentChange)}</strong><br>${getAdvice(percentChange, cityB, scenario, freeB, freeA, kidsCount)}</div>
+                <div class="sources"><strong><i class="fas fa-database"></i> ИСТОЧНИКИ ДАННЫХ (актуальные на ${dateStr}):</strong><br>• 📈 Доходы по регионам — Росстат / НИУ ВШЭ<br>• 🏠 Цены на аренду — Циан / ручной сбор (30 городов)<br>• 🛒 Продуктовая корзина — Росстат + Едадил (33 наименования)<br>• 🚌 Транспорт — 2ГИС API<br>• 🎭 Развлечения — Яндекс.Афиша, 2ГИС<br>• 👶 Расходы на детей — Росстат + собственные коэффициенты<br>• 📊 Инфляция и сезонность — Росстат + ЦБ РФ</div>
             `;
 
             document.getElementById('results').style.display = 'block';
             document.getElementById('results').innerHTML = resultsHtml;
-
             setTimeout(() => { createInflationChart(monthlyForecast, cityB); }, 100);
             window.scrollTo({ top: document.getElementById('results').offsetTop - 20, behavior: 'smooth' });
-        }
-
-        function getYearWord(years) { if (years === 1) return 'год'; if (years >= 2 && years <= 4) return 'года'; return 'лет'; }
-        function getChildWord(count) { if (count === 1) return 'ребёнка'; if (count >= 2 && count <= 4) return 'детей'; return 'детей'; }
-
-        function getAdviceTitle(percentChange) {
-            if (percentChange > 15) return '🔥 Отличная возможность!';
-            if (percentChange > 5) return '📈 Хороший вариант';
-            if (percentChange > -5) return '⚠️ Взвесьте все за и против';
-            return '📉 Стоит подумать';
-        }
-
-        function createRentChart(dataA, dataB, cityA, cityB) {
-            const maxRent = Math.max(dataA.rent1Center, dataB.rent1Center, dataA.rent1Suburb, dataB.rent1Suburb, dataA.rent2Room, dataB.rent2Room);
-            return `<div class="bar-container"><div class="bar-label"><span>🏢 1-комнатная в центре</span><span><strong>${cityA}</strong> ${formatNumber(dataA.rent1Center)} ₽ | <strong>${cityB}</strong> ${formatNumber(dataB.rent1Center)} ₽</span></div><div class="bar-bg"><div class="bar-fill city-a" style="width: ${(dataA.rent1Center / maxRent) * 100}%">${Math.round((dataA.rent1Center / maxRent) * 100)}%</div></div><div class="bar-bg" style="margin-top: 5px;"><div class="bar-fill city-b" style="width: ${(dataB.rent1Center / maxRent) * 100}%">${Math.round((dataB.rent1Center / maxRent) * 100)}%</div></div></div>
-            <div class="bar-container"><div class="bar-label"><span>🏘️ 1-комнатная в спальном районе</span><span><strong>${cityA}</strong> ${formatNumber(dataA.rent1Suburb)} ₽ | <strong>${cityB}</strong> ${formatNumber(dataB.rent1Suburb)} ₽</span></div><div class="bar-bg"><div class="bar-fill city-a" style="width: ${(dataA.rent1Suburb / maxRent) * 100}%">${Math.round((dataA.rent1Suburb / maxRent) * 100)}%</div></div><div class="bar-bg" style="margin-top: 5px;"><div class="bar-fill city-b" style="width: ${(dataB.rent1Suburb / maxRent) * 100}%">${Math.round((dataB.rent1Suburb / maxRent) * 100)}%</div></div></div>
-            <div class="bar-container"><div class="bar-label"><span>👨‍👩‍👧 2-комнатная (для семьи)</span><span><strong>${cityA}</strong> ${formatNumber(dataA.rent2Room)} ₽ | <strong>${cityB}</strong> ${formatNumber(dataB.rent2Room)} ₽</span></div><div class="bar-bg"><div class="bar-fill city-a" style="width: ${(dataA.rent2Room / maxRent) * 100}%">${Math.round((dataA.rent2Room / maxRent) * 100)}%</div></div><div class="bar-bg" style="margin-top: 5px;"><div class="bar-fill city-b" style="width: ${(dataB.rent2Room / maxRent) * 100}%">${Math.round((dataB.rent2Room / maxRent) * 100)}%</div></div></div>`;
-        }
-
-        function createFoodChartWithKids(baseFoodA, baseFoodB, foodA, foodB, cityA, cityB, kidsCount) {
-            const maxFood = Math.max(foodA, foodB);
-            return `
-                <div class="bar-container">
-                    <div class="bar-label">
-                        <span>${cityA}</span>
-                        <span>${formatNumber(foodA)} ₽</span>
-                    </div>
-                    <div class="bar-bg">
-                        <div class="bar-fill city-a" style="width: ${(foodA / maxFood) * 100}%">
-                            ${Math.round((foodA / maxFood) * 100)}%
-                        </div>
-                    </div>
-                    ${kidsCount > 0 ? `<div style="font-size: 11px; margin-top: 4px;">Базовая корзина: ${formatNumber(baseFoodA)} ₽ + ${Math.round(KIDS_MULTIPLIERS.food * kidsCount * 100)}% на детей</div>` : ''}
-                </div>
-                <div class="bar-container">
-                    <div class="bar-label">
-                        <span>${cityB}</span>
-                        <span>${formatNumber(foodB)} ₽</span>
-                    </div>
-                    <div class="bar-bg">
-                        <div class="bar-fill city-b" style="width: ${(foodB / maxFood) * 100}%">
-                            ${Math.round((foodB / maxFood) * 100)}%
-                        </div>
-                    </div>
-                    ${kidsCount > 0 ? `<div style="font-size: 11px; margin-top: 4px;">Базовая корзина: ${formatNumber(baseFoodB)} ₽ + ${Math.round(KIDS_MULTIPLIERS.food * kidsCount * 100)}% на детей</div>` : ''}
-                </div>
-                <div style="margin-top: 10px; font-size: 12px; background: #e8f4f8; padding: 10px; border-radius: 8px;">
-                    🍞 Набор из 33 продуктов: хлеб, молоко, мясо, овощи, фрукты, масло, крупы и др.
-                    ${kidsCount > 0 ? `<br>👶 Детское питание и дополнительные продукты учтены в коэффициенте +${Math.round(KIDS_MULTIPLIERS.food * kidsCount * 100)}%` : ''}
-                </div>
-            `;
-        }
-
-        function createTransportTableWithKids(dataA, dataB, cityA, cityB, transportA, transportB, utilsA, utilsB, kidsCount) {
-            return `
-                <table style="width: 100%; border-collapse: collapse;">
-                    <thead>
-                        <tr style="background: linear-gradient(135deg, #a888e5, #8b6bd6); color: white;">
-                            <th style="padding: 12px; text-align: left; border-radius: 10px 0 0 0;">Категория</th>
-                            <th style="padding: 12px; text-align: center;">${cityA}</th>
-                            <th style="padding: 12px; text-align: center; border-radius: 0 10px 0 0;">${cityB}</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr style="border-bottom: 1px solid #e0e0e0;">
-                            <td style="padding: 12px;">🚌 Проездной (месяц)${kidsCount > 0 ? `<br><span style="font-size: 10px;">+${Math.round(KIDS_MULTIPLIERS.transport * kidsCount * 100)}% на детей</span>` : ''}</td>
-                            <td style="padding: 12px; text-align: center;"><strong>${formatNumber(transportA)} ₽</strong><br><span style="font-size: 10px;">(база: ${formatNumber(dataA.transportMonth)} ₽)</span></td>
-                            <td style="padding: 12px; text-align: center;"><strong>${formatNumber(transportB)} ₽</strong><br><span style="font-size: 10px;">(база: ${formatNumber(dataB.transportMonth)} ₽)</span></td>
-                        </tr>
-                        <tr style="border-bottom: 1px solid #e0e0e0; background: #f8f9fa;">
-                            <td style="padding: 12px;">⛽ Бензин АИ-95 (литр)</td>
-                            <td style="padding: 12px; text-align: center;"><strong>${dataA.gasoline} ₽</strong></td>
-                            <td style="padding: 12px; text-align: center;"><strong>${dataB.gasoline} ₽</strong></td>
-                        </tr>
-                        <tr style="border-bottom: 1px solid #e0e0e0;">
-                            <td style="padding: 12px;">🚕 Такси (средняя поездка)${kidsCount > 0 ? `<br><span style="font-size: 10px;">+${kidsCount * 150}₽ на детское кресло</span>` : ''}</td>
-                            <td style="padding: 12px; text-align: center;"><strong>${formatNumber(dataA.taxi + (kidsCount > 0 ? kidsCount * 150 : 0))} ₽</strong></td>
-                            <td style="padding: 12px; text-align: center;"><strong>${formatNumber(dataB.taxi + (kidsCount > 0 ? kidsCount * 150 : 0))} ₽</strong></td>
-                        </tr>
-                        <tr style="background: #f8f9fa;">
-                            <td style="padding: 12px;">💡 ЖКХ (квартплата + свет + вода)${kidsCount > 0 ? `<br><span style="font-size: 10px;">+${Math.round(KIDS_MULTIPLIERS.utils * kidsCount * 100)}% на детей</span>` : ''}</td>
-                            <td style="padding: 12px; text-align: center;"><strong>${formatNumber(utilsA)} ₽</strong><br><span style="font-size: 10px;">(база: ${formatNumber(dataA.utils)} ₽)</span></td>
-                            <td style="padding: 12px; text-align: center;"><strong>${formatNumber(utilsB)} ₽</strong><br><span style="font-size: 10px;">(база: ${formatNumber(dataB.utils)} ₽)</span></td>
-                        </tr>
-                    </tbody>
-                </table>
-                <div style="margin-top: 12px; font-size: 11px; color: #999; text-align: center;">
-                    📍 Источник: 2ГИС API, данные на ${new Date().toLocaleDateString('ru-RU')}
-                    ${kidsCount > 0 ? `<br>👶 Дополнительные расходы на детей в транспорте и ЖКХ учтены` : ''}
-                </div>
-            `;
-        }
-
-        function getAdvice(percentChange, cityB, scenario, freeB, freeA, kidsCount) {
-            const diff = freeB - freeA;
-            const diffAbs = Math.abs(diff);
-            if (percentChange > 15) return `Переезд в ${cityB} увеличит ваш бюджет на ${formatNumber(diffAbs)} ₽ (${Math.round(percentChange)}%). ${kidsCount > 0 ? `С ${kidsCount} ${getChildWord(kidsCount)} это особенно важно — больше средств на развитие, образование и комфорт всей семьи.` : 'Вы сможете больше откладывать или тратить на путешествия.'}`;
-            if (percentChange > 5) return `Переезд в ${cityB} даст умеренный плюс: +${formatNumber(diffAbs)} ₽/мес (${Math.round(percentChange)}%). Учитывайте инфраструктуру, климат и карьерные перспективы. ${kidsCount > 0 ? 'Для семьи с детьми также важны школы и детские сады.' : ''}`;
-            if (percentChange > -5) return `Финансовая разница незначительна: ${diff > 0 ? '+' : ''}${formatNumber(diffAbs)} ₽ (${Math.round(percentChange)}%). Ориентируйтесь на качество жизни, экологию и близость к родственникам. ${kidsCount > 0 ? 'Для детей выбирайте район с хорошими школами и парками.' : ''}`;
-            if (percentChange > -15) return `Переезд снизит ваш остаток на ${formatNumber(diffAbs)} ₽ (${Math.round(percentChange)}%). Рекомендуем найти работу с зарплатой выше средней или рассмотреть удалёнку. ${kidsCount > 0 ? 'С детьми каждая тысяча на счету!' : ''}`;
-            return `⚠️ ВНИМАНИЕ: ${cityB} уменьшит ваш бюджет на ${formatNumber(diffAbs)} ₽ (${Math.round(percentChange)}%). ${kidsCount > 0 ? `С ${kidsCount} ${getChildWord(kidsCount)} такая разница критична — может существенно повлиять на качество жизни и возможности для детей.` : 'Настоятельно рекомендуем пересмотреть решение.'}`;
-        }
-
-        function downloadReport() {
-            const content = document.getElementById('results').innerHTML;
-            if (!content || content.trim() === '') { alert('Сначала выполните расчет!'); return; }
-            const style = document.querySelector('style').innerHTML;
-            const fullHtml = `<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Отчёт о переезде</title><script src="https://cdn.jsdelivr.net/npm/chart.js"><\/script><style>${style} body { padding: 20px; } .theme-toggle, .download-section { display: none; } .container { max-width: 1200px; margin: 0 auto; }</style></head><body><div class="container">${content}</div></body></html>`;
-            const blob = new Blob([fullHtml], { type: 'text/html' });
-            const link = document.createElement('a');
-            link.href = URL.createObjectURL(blob);
-            link.download = `price_of_move_report_${new Date().toISOString().slice(0,19).replace(/:/g, '-')}.html`;
-            link.click();
-            URL.revokeObjectURL(link.href);
-        }
-
-        function toggleTheme() {
-            document.body.classList.toggle('dark-theme');
-            const btn = document.querySelector('.theme-toggle');
-            btn.textContent = document.body.classList.contains('dark-theme') ? '☀️ Светлая тема' : '🌙 Тёмная тема';
         }
     </script>
 </body>
