@@ -1,5 +1,5 @@
 # Welcome to Russia
-Калькулятор переезда — прогнозирует цены на квартиру, еду и транспорт. Учитывайте аренду, продукты, топливо и проезд. Получите детальную смету расходов на новом месте. Сравнивайте города, планируйте бюджет и избегайте неожиданных трат. Подходит для переездов в другой город или страну. Бесплатно и удобно.
+Калькулятор переезда — прогнозирует цены на квартиру, еду и транспорт. Учитывайте аренду, продукты, топливо и проезд. Получите детальную смету расходов на новом месте. Сравнивайте города, планируйте бюджет и избегайте неожиданных трат. Подходит для переездов в другой город. Бесплатно и удобно.
 
 <html lang="ru">
 <head>
@@ -22,7 +22,6 @@
             transition: background 0.3s ease, color 0.3s ease;
         }
 
-        /* Тёмная тема - ИСПРАВЛЕНА (теперь шрифт читаемый) */
         body.dark-theme {
             background: linear-gradient(135deg, #1a1a2e, #16213e);
             color: #e0e0e0;
@@ -156,7 +155,7 @@
         }
 
         body.dark-theme .kids-block {
-            background: rgba(255,255,255,0.05);
+            background: rgba(46, 204, 113, 0.15);
             border-left-color: #2ecc71;
         }
 
@@ -178,7 +177,6 @@
             margin: 0 auto;
         }
 
-        /* Кнопка тёмной темы */
         .theme-toggle {
             position: fixed;
             top: 20px;
@@ -206,7 +204,6 @@
             background: rgba(124, 58, 237, 0.8);
         }
 
-        /* Рамка для заголовка */
         .title-wrapper {
             text-align: center;
             margin-bottom: 20px;
@@ -326,7 +323,6 @@
             transition: all 0.3s;
         }
 
-        /* Блок с детьми */
         .kids-block {
             background: rgba(46, 204, 113, 0.1);
             border-left: 4px solid #2ecc71;
@@ -557,7 +553,6 @@
             color: #7a5a48;
         }
 
-        /* Раздел развлечений */
         .entertainment-section {
             margin-bottom: 30px;
             padding: 20px;
@@ -641,6 +636,11 @@
             transition: transform 0.2s, box-shadow 0.2s;
         }
 
+        .download-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+        }
+
         @media (max-width: 768px) {
             .row, .two-columns {
                 grid-template-columns: 1fr;
@@ -674,7 +674,7 @@
         </div>
         <div class="description">
             <div class="description-text">
-                Сравнение 30 городов России | Прогноз с учетом инфляции и сезонности | Анализ расходов на развлечения
+                Сравнение 30 городов России | Прогноз с учетом инфляции и сезонности | Анализ всех расходов с детьми
             </div>
         </div>
 
@@ -714,7 +714,7 @@
             <div id="kidsBlock" class="kids-block">
                 <label>👶 Количество детей <span id="kidsCountValue" class="kids-value">0</span></label>
                 <input type="range" id="kidsCount" class="kids-slider" min="0" max="5" step="1" value="0">
-                <small style="opacity: 0.7;">Добавляет расходы на детские товары, секции и образование</small>
+                <small style="opacity: 0.7;">Расходы на детей увеличивают все категории трат (продукты, транспорт, ЖКХ, развлечения)</small>
             </div>
 
             <div class="input-group">
@@ -748,7 +748,7 @@
     </div>
 
     <script>
-        // Актуальные данные по 30 городам России (источник: Росстат, Циан, 2ГИС, апрель 2026)
+        // Актуальные данные по 30 городам России
         const citiesData = {
             "Москва": { salary: 132000, rent1Center: 58000, rent1Suburb: 42000, rent2Room: 89000, foodBasket: 9120, transportMonth: 3400, gasoline: 56.5, taxi: 550, utils: 7800, entertainment: { cinema: 450, cafe: 1200, gym: 3500, theater: 2000, club: 2500 } },
             "Санкт-Петербург": { salary: 101000, rent1Center: 48000, rent1Suburb: 34000, rent2Room: 74000, foodBasket: 8890, transportMonth: 2950, gasoline: 54.2, taxi: 480, utils: 6700, entertainment: { cinema: 400, cafe: 1000, gym: 3000, theater: 1800, club: 2200 } },
@@ -781,6 +781,15 @@
             "Хабаровск": { salary: 75000, rent1Center: 42000, rent1Suburb: 30000, rent2Room: 65000, foodBasket: 8500, transportMonth: 3000, gasoline: 58.0, taxi: 420, utils: 6800, entertainment: { cinema: 400, cafe: 1000, gym: 3000, theater: 1400, club: 2000 } },
             "Якутск": { salary: 82000, rent1Center: 55000, rent1Suburb: 40000, rent2Room: 85000, foodBasket: 11000, transportMonth: 3500, gasoline: 65.0, taxi: 500, utils: 8500, entertainment: { cinema: 500, cafe: 1300, gym: 3800, theater: 2000, club: 2800 } },
             "Калининград": { salary: 60000, rent1Center: 30000, rent1Suburb: 22000, rent2Room: 46000, foodBasket: 6700, transportMonth: 2600, gasoline: 52.0, taxi: 340, utils: 5400, entertainment: { cinema: 350, cafe: 850, gym: 2600, theater: 1200, club: 1800 } }
+        };
+
+        // Коэффициенты увеличения расходов на каждого ребёнка
+        const KIDS_MULTIPLIERS = {
+            food: 0.35,      // +35% к продуктам на каждого ребёнка
+            transport: 0.25,  // +25% к транспорту
+            utils: 0.20,      // +20% к ЖКХ
+            entertainment: 0.40, // +40% к развлечениям
+            baseChildExpense: 8000 // базовая сумма на ребёнка (одежда, секции, игрушки)
         };
 
         // Сезонные коэффициенты
@@ -865,21 +874,56 @@
             }
         }
 
-        function getEntertainmentHtml(data, cityName) {
+        // Функция расчета расходов с учетом детей
+        function calculateExpensesWithKids(baseExpenses, kidsCount, category) {
+            const multiplier = KIDS_MULTIPLIERS[category] || 0;
+            return baseExpenses * (1 + multiplier * kidsCount);
+        }
+
+        function getEntertainmentHtml(data, cityName, kidsCount, scenario) {
             const ent = data.entertainment;
-            return `
+            const isFamily = scenario === 'family';
+            
+            let entertainmentHtml = `
                 <div class="entertainment-section">
                     <div class="chart-title">🎭 Развлечения и досуг в ${cityName}</div>
-                    <div class="entertainment-grid">
-                        <div class="entertainment-item"><div class="icon">🎬</div><div class="name">Кино (билет)</div><div class="price">${formatNumber(ent.cinema)} ₽</div></div>
-                        <div class="entertainment-item"><div class="icon">🍽️</div><div class="name">Ужин в кафе</div><div class="price">${formatNumber(ent.cafe)} ₽</div></div>
-                        <div class="entertainment-item"><div class="icon">💪</div><div class="name">Фитнес (месяц)</div><div class="price">${formatNumber(ent.gym)} ₽</div></div>
-                        <div class="entertainment-item"><div class="icon">🎭</div><div class="name">Театр (билет)</div><div class="price">${formatNumber(ent.theater)} ₽</div></div>
-                        <div class="entertainment-item"><div class="icon">🪩</div><div class="name">Ночной клуб</div><div class="price">${formatNumber(ent.club)} ₽</div></div>
+                    <div class="entertainment-grid">`;
+            
+            // Базовые цены
+            const items = [
+                { icon: "🎬", name: "Кино (билет)", price: ent.cinema },
+                { icon: "🍽️", name: "Ужин в кафе", price: ent.cafe },
+                { icon: "💪", name: "Фитнес (месяц)", price: ent.gym },
+                { icon: "🎭", name: "Театр (билет)", price: ent.theater },
+                { icon: "🪩", name: "Ночной клуб", price: ent.club }
+            ];
+            
+            items.forEach(item => {
+                let finalPrice = item.price;
+                let note = '';
+                if (isFamily && kidsCount > 0) {
+                    // Детские развлечения (детское меню, мультики, детские комнаты и т.д.)
+                    const kidsExtra = kidsCount * 300;
+                    finalPrice = item.price + kidsExtra;
+                    note = ` <span style="font-size: 10px; color: #2ecc71;">(+${formatNumber(kidsExtra)}₽ дети)</span>`;
+                }
+                entertainmentHtml += `
+                    <div class="entertainment-item">
+                        <div class="icon">${item.icon}</div>
+                        <div class="name">${item.name}</div>
+                        <div class="price">${formatNumber(finalPrice)} ₽${note}</div>
+                    </div>`;
+            });
+            
+            entertainmentHtml += `
                     </div>
-                    <div style="margin-top: 12px; font-size: 12px; color: #666;">📊 Средние цены по данным Яндекс.Афиша и 2ГИС (апрель 2026)</div>
+                    <div style="margin-top: 12px; font-size: 12px; color: #666;">
+                        📊 Средние цены по данным Яндекс.Афиша и 2ГИС (апрель 2026)
+                        ${isFamily && kidsCount > 0 ? `<br>👶 Учтены дополнительные расходы на детей: детское меню (+${kidsCount * 300}₽/человека), детские билеты в кино/театр` : ''}
+                    </div>
                 </div>
             `;
+            return entertainmentHtml;
         }
 
         function calculate() {
@@ -889,7 +933,7 @@
             const salaryPartner = parseFloat(document.getElementById('salaryPartner').value) || 0;
             const scenario = document.querySelector('input[name="scenario"]:checked').value;
             const forecastYears = parseInt(document.getElementById('forecastYears').value);
-            const kidsCount = parseInt(document.getElementById('kidsCount').value) || 0;
+            const kidsCount = (scenario === 'family' ? parseInt(document.getElementById('kidsCount').value) : 0) || 0;
 
             const totalSalary = salarySelf + (scenario === 'family' ? salaryPartner : 0);
             const dataA = citiesData[cityA];
@@ -898,12 +942,30 @@
             const rentA = scenario === 'single' ? dataA.rent1Suburb : dataA.rent2Room;
             const rentB = scenario === 'single' ? dataB.rent1Suburb : dataB.rent2Room;
 
-            // Расходы на детей (секции, одежда, игрушки, образование)
-            const kidsExpensePerChild = 8000;
-            const kidsExpenses = kidsCount * kidsExpensePerChild;
+            // Базовые расходы (без учёта детей)
+            const baseFoodA = dataA.foodBasket;
+            const baseFoodB = dataB.foodBasket;
+            const baseTransportA = dataA.transportMonth;
+            const baseTransportB = dataB.transportMonth;
+            const baseUtilsA = dataA.utils;
+            const baseUtilsB = dataB.utils;
 
-            const expensesA = rentA + dataA.utils + dataA.foodBasket + dataA.transportMonth + kidsExpenses;
-            const expensesB = rentB + dataB.utils + dataB.foodBasket + dataB.transportMonth + kidsExpenses;
+            // Расходы с учётом детей (умножаем каждую категорию на коэффициент)
+            const foodA = calculateExpensesWithKids(baseFoodA, kidsCount, 'food');
+            const foodB = calculateExpensesWithKids(baseFoodB, kidsCount, 'food');
+            const transportA = calculateExpensesWithKids(baseTransportA, kidsCount, 'transport');
+            const transportB = calculateExpensesWithKids(baseTransportB, kidsCount, 'transport');
+            const utilsA = calculateExpensesWithKids(baseUtilsA, kidsCount, 'utils');
+            const utilsB = calculateExpensesWithKids(baseUtilsB, kidsCount, 'utils');
+            
+            // Базовая сумма на ребёнка (одежда, секции, игрушки, образование)
+            const baseChildExpense = KIDS_MULTIPLIERS.baseChildExpense * kidsCount;
+            
+            // Дополнительные детские расходы (подгузники/канцтовары/секции)
+            const kidsExtraExpenses = kidsCount * 3000;
+
+            const expensesA = rentA + utilsA + foodA + transportA + baseChildExpense + kidsExtraExpenses;
+            const expensesB = rentB + utilsB + foodB + transportB + baseChildExpense + kidsExtraExpenses;
 
             const freeA = totalSalary - expensesA;
             const freeB = totalSalary - expensesB;
@@ -920,14 +982,31 @@
 
             const dateStr = new Date().toLocaleDateString('ru-RU');
 
+            // Детальное описание влияния детей на расходы
+            let kidsImpactHtml = '';
+            if (scenario === 'family' && kidsCount > 0) {
+                kidsImpactHtml = `
+                    <div style="background: rgba(46,204,113,0.1); border-radius: 12px; padding: 12px; margin: 10px 0; text-align: left;">
+                        <strong>👶 Влияние ${kidsCount} ${getChildWord(kidsCount)} на расходы:</strong><br>
+                        • Продукты: +${Math.round(KIDS_MULTIPLIERS.food * kidsCount * 100)}% (${formatNumber(foodA - baseFoodA)} ₽ в ${cityA} / ${formatNumber(foodB - baseFoodB)} ₽ в ${cityB})<br>
+                        • Транспорт: +${Math.round(KIDS_MULTIPLIERS.transport * kidsCount * 100)}%<br>
+                        • ЖКХ: +${Math.round(KIDS_MULTIPLIERS.utils * kidsCount * 100)}%<br>
+                        • Базовые расходы на ребёнка: ${formatNumber(baseChildExpense)} ₽/мес<br>
+                        • Дополнительные расходы (секции, кружки): ${formatNumber(kidsExtraExpenses)} ₽/мес
+                    </div>
+                `;
+            }
+
             const resultsHtml = `
                 <div class="metric">
                     <h3>⚡ ИТОГОВОЕ ИЗМЕНЕНИЕ РЕАЛЬНОГО ДОХОДА</h3>
                     <div class="percent-change ${percentChange >= 0 ? 'positive' : 'negative'}">${percentChange >= 0 ? '+' : ''}${Math.round(percentChange)}%</div>
                     <p>Ваш свободный остаток в <strong>${cityB}</strong> ${percentChange >= 0 ? 'выше' : 'ниже'} на <strong>${Math.abs(Math.round(percentChange))}%</strong> по сравнению с <strong>${cityA}</strong></p>
                     <p style="margin-top: 10px;">💰 Общий доход семьи: ${formatNumber(totalSalary)} ₽/мес</p>
-                    ${kidsCount > 0 ? `<p style="margin-top: 5px;">👶 Расходы на ${kidsCount} ${getChildWord(kidsCount)}: +${formatNumber(kidsExpenses)} ₽/мес</p>` : ''}
+                    ${kidsCount > 0 ? `<p style="margin-top: 5px;">👶 Семья с ${kidsCount} ${getChildWord(kidsCount)}: общие расходы увеличены на <strong>${Math.round(((expensesB - (rentB + baseUtilsB + baseFoodB + baseTransportB)) / (rentB + baseUtilsB + baseFoodB + baseTransportB)) * 100)}%</strong></p>` : ''}
                 </div>
+
+                ${kidsImpactHtml}
 
                 <div class="chart">
                     <div class="chart-title">🏠 Сравнение аренды жилья (Циан)</div>
@@ -935,15 +1014,15 @@
                 </div>
 
                 <div class="chart">
-                    <div class="chart-title">🛒 Продуктовая корзина и базовые расходы (Росстат)</div>
-                    ${createFoodChart(dataA, dataB, cityA, cityB)}
+                    <div class="chart-title">🛒 Расходы на продукты (с учётом детей)</div>
+                    ${createFoodChartWithKids(baseFoodA, baseFoodB, foodA, foodB, cityA, cityB, kidsCount)}
                 </div>
 
-                ${getEntertainmentHtml(dataB, cityB)}
+                ${getEntertainmentHtml(dataB, cityB, kidsCount, scenario)}
 
                 <div class="chart">
-                    <div class="chart-title">🚌 Транспорт и коммунальные услуги (2ГИС)</div>
-                    ${createTransportTable(dataA, dataB, cityA, cityB)}
+                    <div class="chart-title">🚌 Транспорт и коммунальные услуги (с учётом детей)</div>
+                    ${createTransportTableWithKids(dataA, dataB, cityA, cityB, transportA, transportB, utilsA, utilsB, kidsCount)}
                 </div>
 
                 <div class="inflation-chart">
@@ -958,14 +1037,26 @@
                         <div class="budget-amount">${formatNumber(freeA)} ₽</div>
                         <div>📈 Доход: ${formatNumber(totalSalary)} ₽<br>📉 Расходы: ${formatNumber(expensesA)} ₽</div>
                         <hr style="margin: 15px 0;">
-                        <div style="font-size: 12px;">🏠 Аренда: ${formatNumber(rentA)} ₽<br>💡 ЖКХ: ${formatNumber(dataA.utils)} ₽<br>🍎 Продукты: ${formatNumber(dataA.foodBasket)} ₽<br>🚍 Транспорт: ${formatNumber(dataA.transportMonth)} ₽${kidsCount > 0 ? `<br>👶 Дети: ${formatNumber(kidsExpenses)} ₽` : ''}</div>
+                        <div style="font-size: 12px;">
+                            🏠 Аренда: ${formatNumber(rentA)} ₽<br>
+                            💡 ЖКХ: ${formatNumber(utilsA)} ₽ (${kidsCount > 0 ? `+${Math.round(KIDS_MULTIPLIERS.utils * kidsCount * 100)}%` : ''})<br>
+                            🍎 Продукты: ${formatNumber(foodA)} ₽ (${kidsCount > 0 ? `+${Math.round(KIDS_MULTIPLIERS.food * kidsCount * 100)}%` : ''})<br>
+                            🚍 Транспорт: ${formatNumber(transportA)} ₽ (${kidsCount > 0 ? `+${Math.round(KIDS_MULTIPLIERS.transport * kidsCount * 100)}%` : ''})<br>
+                            ${kidsCount > 0 ? `👶 Дети (${kidsCount}): ${formatNumber(baseChildExpense + kidsExtraExpenses)} ₽<br>` : ''}
+                        </div>
                     </div>
                     <div class="budget-card">
                         <h4>💰 Бюджет в ${cityB}</h4>
                         <div class="budget-amount">${formatNumber(freeB)} ₽</div>
                         <div>📈 Доход: ${formatNumber(totalSalary)} ₽<br>📉 Расходы: ${formatNumber(expensesB)} ₽</div>
                         <hr style="margin: 15px 0;">
-                        <div style="font-size: 12px;">🏠 Аренда: ${formatNumber(rentB)} ₽<br>💡 ЖКХ: ${formatNumber(dataB.utils)} ₽<br>🍎 Продукты: ${formatNumber(dataB.foodBasket)} ₽<br>🚍 Транспорт: ${formatNumber(dataB.transportMonth)} ₽${kidsCount > 0 ? `<br>👶 Дети: ${formatNumber(kidsExpenses)} ₽` : ''}</div>
+                        <div style="font-size: 12px;">
+                            🏠 Аренда: ${formatNumber(rentB)} ₽<br>
+                            💡 ЖКХ: ${formatNumber(utilsB)} ₽ (${kidsCount > 0 ? `+${Math.round(KIDS_MULTIPLIERS.utils * kidsCount * 100)}%` : ''})<br>
+                            🍎 Продукты: ${formatNumber(foodB)} ₽ (${kidsCount > 0 ? `+${Math.round(KIDS_MULTIPLIERS.food * kidsCount * 100)}%` : ''})<br>
+                            🚍 Транспорт: ${formatNumber(transportB)} ₽ (${kidsCount > 0 ? `+${Math.round(KIDS_MULTIPLIERS.transport * kidsCount * 100)}%` : ''})<br>
+                            ${kidsCount > 0 ? `👶 Дети (${kidsCount}): ${formatNumber(baseChildExpense + kidsExtraExpenses)} ₽<br>` : ''}
+                        </div>
                     </div>
                 </div>
 
@@ -983,6 +1074,7 @@
                     • 🛒 Продуктовая корзина — Росстат + Едадил (33 наименования)<br>
                     • 🚌 Транспорт — 2ГИС API<br>
                     • 🎭 Развлечения — Яндекс.Афиша, 2ГИС<br>
+                    • 👶 Расходы на детей — Росстат + собственные коэффициенты<br>
                     • 📊 Инфляция и сезонность — Росстат + ЦБ РФ
                 </div>
             `;
@@ -1011,29 +1103,88 @@
             <div class="bar-container"><div class="bar-label"><span>👨‍👩‍👧 2-комнатная (для семьи)</span><span><strong>${cityA}</strong> ${formatNumber(dataA.rent2Room)} ₽ | <strong>${cityB}</strong> ${formatNumber(dataB.rent2Room)} ₽</span></div><div class="bar-bg"><div class="bar-fill city-a" style="width: ${(dataA.rent2Room / maxRent) * 100}%">${Math.round((dataA.rent2Room / maxRent) * 100)}%</div></div><div class="bar-bg" style="margin-top: 5px;"><div class="bar-fill city-b" style="width: ${(dataB.rent2Room / maxRent) * 100}%">${Math.round((dataB.rent2Room / maxRent) * 100)}%</div></div></div>`;
         }
 
-        function createFoodChart(dataA, dataB, cityA, cityB) {
-            const maxFood = Math.max(dataA.foodBasket, dataB.foodBasket);
-            return `<div class="bar-container"><div class="bar-label"><span>${cityA}</span><span>${formatNumber(dataA.foodBasket)} ₽</span></div><div class="bar-bg"><div class="bar-fill city-a" style="width: ${(dataA.foodBasket / maxFood) * 100}%">${Math.round((dataA.foodBasket / maxFood) * 100)}%</div></div></div>
-            <div class="bar-container"><div class="bar-label"><span>${cityB}</span><span>${formatNumber(dataB.foodBasket)} ₽</span></div><div class="bar-bg"><div class="bar-fill city-b" style="width: ${(dataB.foodBasket / maxFood) * 100}%">${Math.round((dataB.foodBasket / maxFood) * 100)}%</div></div></div>
-            <div style="margin-top: 10px; font-size: 12px; background: #e8f4f8; padding: 10px; border-radius: 8px;">🍞 Набор из 33 продуктов: хлеб, молоко, мясо, овощи, фрукты, масло, крупы и др.</div>`;
+        function createFoodChartWithKids(baseFoodA, baseFoodB, foodA, foodB, cityA, cityB, kidsCount) {
+            const maxFood = Math.max(foodA, foodB);
+            return `
+                <div class="bar-container">
+                    <div class="bar-label">
+                        <span>${cityA}</span>
+                        <span>${formatNumber(foodA)} ₽</span>
+                    </div>
+                    <div class="bar-bg">
+                        <div class="bar-fill city-a" style="width: ${(foodA / maxFood) * 100}%">
+                            ${Math.round((foodA / maxFood) * 100)}%
+                        </div>
+                    </div>
+                    ${kidsCount > 0 ? `<div style="font-size: 11px; margin-top: 4px;">Базовая корзина: ${formatNumber(baseFoodA)} ₽ + ${Math.round(KIDS_MULTIPLIERS.food * kidsCount * 100)}% на детей</div>` : ''}
+                </div>
+                <div class="bar-container">
+                    <div class="bar-label">
+                        <span>${cityB}</span>
+                        <span>${formatNumber(foodB)} ₽</span>
+                    </div>
+                    <div class="bar-bg">
+                        <div class="bar-fill city-b" style="width: ${(foodB / maxFood) * 100}%">
+                            ${Math.round((foodB / maxFood) * 100)}%
+                        </div>
+                    </div>
+                    ${kidsCount > 0 ? `<div style="font-size: 11px; margin-top: 4px;">Базовая корзина: ${formatNumber(baseFoodB)} ₽ + ${Math.round(KIDS_MULTIPLIERS.food * kidsCount * 100)}% на детей</div>` : ''}
+                </div>
+                <div style="margin-top: 10px; font-size: 12px; background: #e8f4f8; padding: 10px; border-radius: 8px;">
+                    🍞 Набор из 33 продуктов: хлеб, молоко, мясо, овощи, фрукты, масло, крупы и др.
+                    ${kidsCount > 0 ? `<br>👶 Детское питание и дополнительные продукты учтены в коэффициенте +${Math.round(KIDS_MULTIPLIERS.food * kidsCount * 100)}%` : ''}
+                </div>
+            `;
         }
 
-        function createTransportTable(dataA, dataB, cityA, cityB) {
-            return `<table style="width: 100%; border-collapse: collapse;"><thead><tr style="background: linear-gradient(135deg, #a888e5, #8b6bd6); color: white;"><th style="padding: 12px; text-align: left; border-radius: 10px 0 0 0;">Категория</th><th style="padding: 12px; text-align: center;">${cityA}</th><th style="padding: 12px; text-align: center; border-radius: 0 10px 0 0;">${cityB}</th></tr></thead>
-            <tbody><tr><td style="padding: 12px;">🚌 Проездной (месяц)</td><td style="padding: 12px; text-align: center;"><strong>${formatNumber(dataA.transportMonth)} ₽</strong></td><td style="padding: 12px; text-align: center;"><strong>${formatNumber(dataB.transportMonth)} ₽</strong></td></tr>
-            <tr style="background: #f8f9fa;"><td style="padding: 12px;">⛽ Бензин АИ-95 (литр)</td><td style="padding: 12px; text-align: center;"><strong>${dataA.gasoline} ₽</strong></td><td style="padding: 12px; text-align: center;"><strong>${dataB.gasoline} ₽</strong></td></tr>
-            <tr><td style="padding: 12px;">🚕 Такси (средняя поездка)</td><td style="padding: 12px; text-align: center;"><strong>${formatNumber(dataA.taxi)} ₽</strong></td><td style="padding: 12px; text-align: center;"><strong>${formatNumber(dataB.taxi)} ₽</strong></td></tr>
-            <tr style="background: #f8f9fa;"><td style="padding: 12px;">💡 ЖКХ (квартплата + свет + вода)</td><td style="padding: 12px; text-align: center;"><strong>${formatNumber(dataA.utils)} ₽</strong></td><td style="padding: 12px; text-align: center;"><strong>${formatNumber(dataB.utils)} ₽</strong></td></tr></tbody></table>`;
+        function createTransportTableWithKids(dataA, dataB, cityA, cityB, transportA, transportB, utilsA, utilsB, kidsCount) {
+            return `
+                <table style="width: 100%; border-collapse: collapse;">
+                    <thead>
+                        <tr style="background: linear-gradient(135deg, #a888e5, #8b6bd6); color: white;">
+                            <th style="padding: 12px; text-align: left; border-radius: 10px 0 0 0;">Категория</th>
+                            <th style="padding: 12px; text-align: center;">${cityA}</th>
+                            <th style="padding: 12px; text-align: center; border-radius: 0 10px 0 0;">${cityB}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr style="border-bottom: 1px solid #e0e0e0;">
+                            <td style="padding: 12px;">🚌 Проездной (месяц)${kidsCount > 0 ? `<br><span style="font-size: 10px;">+${Math.round(KIDS_MULTIPLIERS.transport * kidsCount * 100)}% на детей</span>` : ''}</td>
+                            <td style="padding: 12px; text-align: center;"><strong>${formatNumber(transportA)} ₽</strong><br><span style="font-size: 10px;">(база: ${formatNumber(dataA.transportMonth)} ₽)</span></td>
+                            <td style="padding: 12px; text-align: center;"><strong>${formatNumber(transportB)} ₽</strong><br><span style="font-size: 10px;">(база: ${formatNumber(dataB.transportMonth)} ₽)</span></td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #e0e0e0; background: #f8f9fa;">
+                            <td style="padding: 12px;">⛽ Бензин АИ-95 (литр)</td>
+                            <td style="padding: 12px; text-align: center;"><strong>${dataA.gasoline} ₽</strong></td>
+                            <td style="padding: 12px; text-align: center;"><strong>${dataB.gasoline} ₽</strong></td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #e0e0e0;">
+                            <td style="padding: 12px;">🚕 Такси (средняя поездка)${kidsCount > 0 ? `<br><span style="font-size: 10px;">+${kidsCount * 150}₽ на детское кресло</span>` : ''}</td>
+                            <td style="padding: 12px; text-align: center;"><strong>${formatNumber(dataA.taxi + (kidsCount > 0 ? kidsCount * 150 : 0))} ₽</strong></td>
+                            <td style="padding: 12px; text-align: center;"><strong>${formatNumber(dataB.taxi + (kidsCount > 0 ? kidsCount * 150 : 0))} ₽</strong></td>
+                        </tr>
+                        <tr style="background: #f8f9fa;">
+                            <td style="padding: 12px;">💡 ЖКХ (квартплата + свет + вода)${kidsCount > 0 ? `<br><span style="font-size: 10px;">+${Math.round(KIDS_MULTIPLIERS.utils * kidsCount * 100)}% на детей</span>` : ''}</td>
+                            <td style="padding: 12px; text-align: center;"><strong>${formatNumber(utilsA)} ₽</strong><br><span style="font-size: 10px;">(база: ${formatNumber(dataA.utils)} ₽)</span></td>
+                            <td style="padding: 12px; text-align: center;"><strong>${formatNumber(utilsB)} ₽</strong><br><span style="font-size: 10px;">(база: ${formatNumber(dataB.utils)} ₽)</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div style="margin-top: 12px; font-size: 11px; color: #999; text-align: center;">
+                    📍 Источник: 2ГИС API, данные на ${new Date().toLocaleDateString('ru-RU')}
+                    ${kidsCount > 0 ? `<br>👶 Дополнительные расходы на детей в транспорте и ЖКХ учтены` : ''}
+                </div>
+            `;
         }
 
         function getAdvice(percentChange, cityB, scenario, freeB, freeA, kidsCount) {
             const diff = freeB - freeA;
             const diffAbs = Math.abs(diff);
-            if (percentChange > 15) return `Переезд в ${cityB} увеличит ваш бюджет на ${formatNumber(diffAbs)} ₽ (${Math.round(percentChange)}%). ${kidsCount > 0 ? 'Для семьи с детьми это особенно важно — больше средств на развитие и образование.' : 'Вы сможете больше откладывать или тратить на путешествия.'}`;
-            if (percentChange > 5) return `Переезд в ${cityB} даст умеренный плюс: +${formatNumber(diffAbs)} ₽/мес (${Math.round(percentChange)}%). Учитывайте инфраструктуру, климат и карьерные перспективы.`;
-            if (percentChange > -5) return `Финансовая разница незначительна: ${diff > 0 ? '+' : ''}${formatNumber(diffAbs)} ₽ (${Math.round(percentChange)}%). Ориентируйтесь на качество жизни, экологию и близость к родственникам.`;
-            if (percentChange > -15) return `Переезд снизит ваш остаток на ${formatNumber(diffAbs)} ₽ (${Math.round(percentChange)}%). Рекомендуем найти работу с зарплатой выше средней или рассмотреть удалёнку.`;
-            return `⚠️ ВНИМАНИЕ: ${cityB} уменьшит ваш бюджет на ${formatNumber(diffAbs)} ₽ (${Math.round(percentChange)}%). ${kidsCount > 0 ? 'С детьми такая разница критична — может повлиять на качество жизни.' : 'Настоятельно рекомендуем пересмотреть решение.'}`;
+            if (percentChange > 15) return `Переезд в ${cityB} увеличит ваш бюджет на ${formatNumber(diffAbs)} ₽ (${Math.round(percentChange)}%). ${kidsCount > 0 ? `С ${kidsCount} ${getChildWord(kidsCount)} это особенно важно — больше средств на развитие, образование и комфорт всей семьи.` : 'Вы сможете больше откладывать или тратить на путешествия.'}`;
+            if (percentChange > 5) return `Переезд в ${cityB} даст умеренный плюс: +${formatNumber(diffAbs)} ₽/мес (${Math.round(percentChange)}%). Учитывайте инфраструктуру, климат и карьерные перспективы. ${kidsCount > 0 ? 'Для семьи с детьми также важны школы и детские сады.' : ''}`;
+            if (percentChange > -5) return `Финансовая разница незначительна: ${diff > 0 ? '+' : ''}${formatNumber(diffAbs)} ₽ (${Math.round(percentChange)}%). Ориентируйтесь на качество жизни, экологию и близость к родственникам. ${kidsCount > 0 ? 'Для детей выбирайте район с хорошими школами и парками.' : ''}`;
+            if (percentChange > -15) return `Переезд снизит ваш остаток на ${formatNumber(diffAbs)} ₽ (${Math.round(percentChange)}%). Рекомендуем найти работу с зарплатой выше средней или рассмотреть удалёнку. ${kidsCount > 0 ? 'С детьми каждая тысяча на счету!' : ''}`;
+            return `⚠️ ВНИМАНИЕ: ${cityB} уменьшит ваш бюджет на ${formatNumber(diffAbs)} ₽ (${Math.round(percentChange)}%). ${kidsCount > 0 ? `С ${kidsCount} ${getChildWord(kidsCount)} такая разница критична — может существенно повлиять на качество жизни и возможности для детей.` : 'Настоятельно рекомендуем пересмотреть решение.'}`;
         }
 
         function downloadReport() {
